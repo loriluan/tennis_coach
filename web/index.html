@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>网球动作智能教练</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>网球动作智能教练</h1>
+    <p class="subtitle">上传照片，AI 提取人体关键点，与标准动作对比，给出专业改进建议</p>
+
+    <!-- 模式切换 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="train">训练模式</button>
+      <button class="mode-tab" data-mode="eval">评估模式</button>
+      <button class="mode-tab" data-mode="compare">百度 vs MediaPipe 对比</button>
+      <button class="mode-tab" data-mode="templates">已训练动作</button>
+    </div>
+
+    <!-- 训练模式 -->
+    <div id="panel-train" class="panel">
+      <div class="card">
+        <h2>录入标准动作</h2>
+        <p class="hint">上传标准技术动作照片，可多次上传同一动作以提高准确度（系统自动取均值）</p>
+        <div class="form-row">
+          <label>动作类型</label>
+          <select id="train-action">
+            <optgroup label="正手击球">
+              <option>正手击球 - 准备</option>
+              <option>正手击球 - 引拍</option>
+              <option>正手击球 - 击球瞬间</option>
+              <option>正手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="反手击球">
+              <option>反手击球 - 准备</option>
+              <option>反手击球 - 引拍</option>
+              <option>反手击球 - 击球瞬间</option>
+              <option>反手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="发球">
+              <option>发球 - 抛球</option>
+              <option>发球 - 击球瞬间</option>
+              <option>发球 - 随挥</option>
+            </optgroup>
+            <optgroup label="截击">
+              <option>截击 - 击球瞬间</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="upload-area" id="train-upload">
+          <input type="file" id="train-img-input" accept="image/*" hidden />
+          <div id="train-placeholder"><div class="upload-icon">📷</div><p>点击或拖拽标准动作照片</p></div>
+          <img id="train-preview" class="hidden" alt="预览" />
+        </div>
+        <canvas id="train-canvas" class="skeleton-canvas hidden"></canvas>
+        <button id="train-btn" class="btn-primary" disabled>提取关键点并保存模板</button>
+        <p id="train-status" class="status hidden"></p>
+        <p id="train-error" class="error hidden"></p>
+        <div id="train-result" class="result-box hidden"></div>
+      </div>
+    </div>
+
+    <!-- 评估模式 -->
+    <div id="panel-eval" class="panel hidden">
+      <div class="card">
+        <h2>分析学员动作</h2>
+        <p class="hint">上传学员照片，系统自动识别动作阶段并与标准模板对比，输出评分和改进建议</p>
+        <div class="upload-area" id="eval-upload">
+          <input type="file" id="eval-img-input" accept="image/*" hidden />
+          <div id="eval-placeholder"><div class="upload-icon">🎾</div><p>点击或拖拽学员照片</p></div>
+          <img id="eval-preview" class="hidden" alt="预览" />
+        </div>
+        <canvas id="eval-canvas" class="skeleton-canvas hidden"></canvas>
+        <button id="eval-btn" class="btn-primary" disabled>开始评估</button>
+        <p id="eval-status" class="status hidden"></p>
+        <p id="eval-error" class="error hidden"></p>
+        <div id="eval-report" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- 对比模式 -->
+    <div id="panel-compare" class="panel hidden">
+      <div class="card">
+        <h2>百度 API vs MediaPipe 对比分析</h2>
+        <p class="hint">上传同一张照片，系统同时用两种方案提取关键点并评估，结果并排展示</p>
+        <div class="upload-area" id="compare-upload">
+          <input type="file" id="compare-img-input" accept="image/*" hidden />
+          <div id="compare-placeholder"><div class="upload-icon">⚖️</div><p>点击或拖拽照片</p></div>
+          <img id="compare-preview" class="hidden" alt="预览" />
+        </div>
+        <button id="compare-btn" class="btn-primary" disabled>同时分析（两种方案）</button>
+        <p id="compare-status" class="status hidden"></p>
+        <p id="compare-error" class="error hidden"></p>
+      </div>
+
+      <div id="compare-result" class="hidden">
+        <div class="compare-grid">
+          <div class="compare-col">
+            <div class="compare-header baidu-header">百度人体分析 API</div>
+            <canvas id="baidu-canvas" class="skeleton-canvas hidden"></canvas>
+            <div id="baidu-report"></div>
+          </div>
+          <div class="compare-col">
+            <div class="compare-header mp-header">MediaPipe Pose</div>
+            <canvas id="mp-canvas" class="skeleton-canvas hidden"></canvas>
+            <div id="mp-report"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 已训练动作 -->
+    <div id="panel-templates" class="panel hidden">
+      <div class="card">
+        <h2>已训练的标准动作</h2>
+        <div id="templates-list"><p class="hint">加载中...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
