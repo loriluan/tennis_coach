@@ -17,6 +17,7 @@
       <button class="mode-tab" data-mode="eval">评估模式</button>
       <button class="mode-tab" data-mode="compare">百度 vs MediaPipe 对比</button>
       <button class="mode-tab" data-mode="templates">已训练动作</button>
+      <button class="mode-tab" data-mode="history">进步曲线</button>
     </div>
 
     <!-- 训练模式 -->
@@ -67,6 +68,10 @@
       <div class="card">
         <h2>分析学员动作</h2>
         <p class="hint">上传学员照片，系统自动识别动作阶段并与标准模板对比，输出评分和改进建议</p>
+        <div class="form-row">
+          <label>学员姓名</label>
+          <input type="text" id="eval-player" placeholder="输入姓名，方便查询进步曲线" />
+        </div>
         <div class="upload-area" id="eval-upload">
           <input type="file" id="eval-img-input" accept="image/*" hidden />
           <div id="eval-placeholder"><div class="upload-icon">🎾</div><p>点击或拖拽学员照片</p></div>
@@ -118,8 +123,32 @@
         <div id="templates-list"><p class="hint">加载中...</p></div>
       </div>
     </div>
+
+    <!-- 进步曲线 -->
+    <div id="panel-history" class="panel hidden">
+      <div class="card">
+        <h2>进步曲线</h2>
+        <div class="form-row" style="flex-wrap:wrap;gap:8px">
+          <label>学员</label>
+          <select id="history-player-select"><option value="">全部学员</option></select>
+          <button id="history-load-btn" class="btn-secondary">查询</button>
+          <button id="history-clear-btn" class="btn-danger">清空记录</button>
+        </div>
+        <div id="history-chart-wrap" class="hidden">
+          <canvas id="history-chart" height="220"></canvas>
+        </div>
+        <div id="history-table-wrap" class="hidden">
+          <table id="history-table" class="history-table">
+            <thead><tr><th>时间</th><th>学员</th><th>动作</th><th>得分</th><th>问题数</th><th>置信度</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p id="history-empty" class="hint" style="text-align:center;padding:20px 0">暂无评估记录，请先在评估模式中分析动作。</p>
+      </div>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -167,7 +167,7 @@ document.getElementById('eval-btn').addEventListener('click', async () => {
   try {
     const resp = await fetch('/api/tennis-evaluate', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({image: evalB64, mime: evalMime}),
+      body: JSON.stringify({image: evalB64, mime: evalMime, player: document.getElementById('eval-player').value}),
     });
     const data = await resp.json();
     statusEl.classList.add('hidden');
@@ -347,6 +347,124 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
     document.getElementById('panel-eval').classList.toggle('hidden',      mode !== 'eval');
     document.getElementById('panel-compare').classList.toggle('hidden',   mode !== 'compare');
     document.getElementById('panel-templates').classList.toggle('hidden', mode !== 'templates');
+    document.getElementById('panel-history').classList.toggle('hidden',   mode !== 'history');
     if (mode === 'templates') loadTemplates();
+    if (mode === 'history')   initHistoryPanel();
   });
+});
+
+// ── 进步曲线 ──────────────────────────────────────────────────
+
+let historyChart = null;
+
+async function initHistoryPanel() {
+  const select = document.getElementById('history-player-select');
+  try {
+    const resp = await fetch('/api/history-players');
+    const data = await resp.json();
+    const current = select.value;
+    select.innerHTML = '<option value="">全部学员</option>';
+    (data.players || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = p;
+      select.appendChild(opt);
+    });
+    if (current) select.value = current;
+  } catch(e) {}
+  await loadHistory();
+}
+
+async function loadHistory() {
+  const player = document.getElementById('history-player-select').value;
+  const url = '/api/history-records' + (player ? `?player=${encodeURIComponent(player)}` : '');
+  try {
+    const resp = await fetch(url);
+    const data = await resp.json();
+    const records = data.records || [];
+
+    const chartWrap = document.getElementById('history-chart-wrap');
+    const tableWrap = document.getElementById('history-table-wrap');
+    const emptyEl   = document.getElementById('history-empty');
+
+    if (!records.length) {
+      chartWrap.classList.add('hidden');
+      tableWrap.classList.add('hidden');
+      emptyEl.classList.remove('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+    chartWrap.classList.remove('hidden');
+    tableWrap.classList.remove('hidden');
+
+    // 曲线图
+    const labels = records.map(r => r.time.slice(5, 16));  // MM-DD HH:mm
+    const scores = records.map(r => r.score);
+
+    if (historyChart) historyChart.destroy();
+    const ctx = document.getElementById('history-chart').getContext('2d');
+    historyChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: '得分',
+          data: scores,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,0.08)',
+          pointBackgroundColor: scores.map(s => s >= 80 ? '#16a34a' : s >= 60 ? '#d97706' : '#dc2626'),
+          pointRadius: 5,
+          tension: 0.3,
+          fill: true,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              afterBody: (items) => {
+                const r = records[items[0].dataIndex];
+                return [`动作：${r.action}`, `问题数：${r.issue_count}`, `置信度：${r.confidence}%`];
+              },
+            },
+          },
+        },
+        scales: {
+          y: { min: 0, max: 100, title: { display: true, text: '得分' } },
+          x: { ticks: { maxRotation: 45 } },
+        },
+      },
+    });
+
+    // 明细表格
+    const tbody = document.querySelector('#history-table tbody');
+    tbody.innerHTML = [...records].reverse().map(r => {
+      const scoreClass = r.score >= 80 ? 'good' : r.score >= 60 ? 'ok' : 'poor';
+      return `<tr>
+        <td>${r.time}</td>
+        <td>${r.player}</td>
+        <td>${r.action}</td>
+        <td><span class="score-badge ${scoreClass}">${r.score}</span></td>
+        <td>${r.issue_count}</td>
+        <td>${r.confidence}%</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('history-empty').textContent = `加载失败：${e.message}`;
+    document.getElementById('history-empty').classList.remove('hidden');
+  }
+}
+
+document.getElementById('history-load-btn').addEventListener('click', loadHistory);
+
+document.getElementById('history-clear-btn').addEventListener('click', async () => {
+  const player = document.getElementById('history-player-select').value;
+  const msg = player ? `确定清空「${player}」的所有记录吗？` : '确定清空所有学员的历史记录吗？';
+  if (!confirm(msg)) return;
+  await fetch('/api/history-clear', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({player}),
+  });
+  await initHistoryPanel();
 });

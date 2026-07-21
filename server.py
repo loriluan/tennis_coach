@@ -17,7 +17,22 @@ if str(SRC_DIR) not in sys.path:
 class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
-        if self.path == '/api/tennis-templates':
+        if self.path == '/api/history-players':
+            try:
+                from tennis_coach.history import list_players
+                self._json(200, {'ok': True, 'players': list_players()})
+            except Exception as e:
+                self._json(500, {'ok': False, 'error': str(e)})
+        elif self.path.startswith('/api/history-records'):
+            try:
+                from tennis_coach.history import get_records
+                from urllib.parse import urlparse, parse_qs
+                qs = parse_qs(urlparse(self.path).query)
+                player = qs.get('player', [''])[0]
+                self._json(200, {'ok': True, 'records': get_records(player)})
+            except Exception as e:
+                self._json(500, {'ok': False, 'error': str(e)})
+        elif self.path == '/api/tennis-templates':
             try:
                 from tennis_coach.templates import load_templates
                 templates = load_templates()
@@ -36,6 +51,7 @@ class Handler(SimpleHTTPRequestHandler):
             '/api/tennis-train':     self._handle_train,
             '/api/tennis-evaluate':  self._handle_evaluate,
             '/api/tennis-compare':   self._handle_compare,
+            '/api/history-clear':    self._handle_history_clear,
         }
         handler = routes.get(self.path)
         if handler:
@@ -141,6 +157,18 @@ class Handler(SimpleHTTPRequestHandler):
             report = evaluate(parts, templates[best_action], best_action)
             report['识别置信度'] = round(max(0, 100 - best_score), 1)
             report['VL语义分析'] = self._vl_analysis(body['image'], mime, best_action, report)
+            try:
+                from tennis_coach.history import save_record
+                save_record(
+                    player=body.get('player', ''),
+                    action=best_action,
+                    score=report['得分'],
+                    angles=report['学员角度'],
+                    issues=report['问题列表'],
+                    confidence=report['识别置信度'],
+                )
+            except Exception:
+                pass
             self._json(200, {'ok': True, 'report': report, 'keypoints': parts})
         except Exception as e:
             self._json(500, {'ok': False, 'error': str(e)})
@@ -170,6 +198,15 @@ class Handler(SimpleHTTPRequestHandler):
         except Exception as e:
             self._json(500, {'ok': False, 'error': str(e)})
 
+    def _handle_history_clear(self):
+        body = self._read_body()
+        try:
+            from tennis_coach.history import clear_records
+            clear_records(body.get('player', ''))
+            self._json(200, {'ok': True})
+        except Exception as e:
+            self._json(500, {'ok': False, 'error': str(e)})
+
     def _vl_analysis(self, image_b64, mime, action, report):
         try:
             import requests as req
@@ -187,8 +224,12 @@ class Handler(SimpleHTTPRequestHandler):
             issues = '、'.join([f"{i['角度名称']}{i['方向']}"
                                 for i in report.get('问题列表', [])]) or '无明显问题'
             prompt = (f"这是一张网球「{action}」动作照片。关节角度分析发现：{issues}。"
-                      f"请补充分析：1.握拍方式 2.击球点位置 3.眼神头部 4.最重要改进建议。"
-                      f"每点一句简洁中文，不要前缀。")
+                      f"请补充分析以下五点，每点一句简洁中文，不要编号前缀：\n"
+                      f"1.握拍方式（东方式/西方式/大陆式等）\n"
+                      f"2.击球点位置（球在身体前方/侧方、高于/齐平/低于腰部，是否在最佳击球区）\n"
+                      f"3.网球位置对动作的影响（击球点偏早/偏晚/偏高/偏低对发力和稳定性的具体影响）\n"
+                      f"4.眼神与头部（是否盯球、头部是否稳定）\n"
+                      f"5.最重要的一条改进建议")
             resp = req.post(
                 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
                 headers={'Content-Type': 'application/json',
