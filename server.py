@@ -94,15 +94,12 @@ class Handler(SimpleHTTPRequestHandler):
             return persons[0]
 
     def _auto_match(self, student_angles, templates):
+        from tennis_coach.analyzer import weighted_rmse
         best_action, best_score = None, float('inf')
         for action, tmpl in templates.items():
-            shared = {k for k in student_angles if k in tmpl['angles']}
-            if not shared:
-                continue
-            rmse = math.sqrt(
-                sum((student_angles[k] - tmpl['angles'][k])**2 for k in shared) / len(shared))
-            if rmse < best_score:
-                best_score, best_action = rmse, action
+            score = weighted_rmse(student_angles, tmpl['angles'])
+            if score < best_score:
+                best_score, best_action = score, action
         return best_action, best_score
 
     # ── endpoints ─────────────────────────────────────────────
