@@ -461,7 +461,7 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     os.chdir(WEB_DIR)
-    port = 8889  # 修改为其他端口
+    port = 8080
     print(f'Tennis Coach server at http://127.0.0.1:{port}', flush=True)
     with ThreadingHTTPServer(('0.0.0.0', port), Handler) as httpd:
         try:
