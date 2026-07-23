@@ -25,22 +25,33 @@ _MP_TO_BAIDU = {
 
 
 def detect_keypoints_mediapipe(image_b64: str) -> dict:
-    import numpy as np
-    import cv2
-    import mediapipe as mp
-    from mediapipe.tasks.python import BaseOptions
-    from mediapipe.tasks.python.vision import PoseLandmarker, PoseLandmarkerOptions, RunningMode
+    try:
+        import numpy as np
+        import cv2
+        import mediapipe as mp
+        from mediapipe.tasks.python import BaseOptions
+        from mediapipe.tasks.python.vision import PoseLandmarker, PoseLandmarkerOptions, RunningMode
+    except ImportError as e:
+        raise ImportError(f'MediaPipe 未安装或不可用: {e}')
+    
     import urllib.request
     from pathlib import Path
 
-    # 首次运行自动下载模型
+    # 首次运行自动下载模型（带完整性校验）
     model_path = Path(__file__).resolve().parents[2] / 'data' / 'pose_landmarker_heavy.task'
     model_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    url = ('https://storage.googleapis.com/mediapipe-models/pose_landmarker/'
+           'pose_landmarker_heavy/float16/latest/pose_landmarker_heavy.task')
+    
+    # 使用带校验的下载函数
+    from .utils import download_file_with_verify
     if not model_path.exists():
-        url = ('https://storage.googleapis.com/mediapipe-models/pose_landmarker/'
-               'pose_landmarker_heavy/float16/latest/pose_landmarker_heavy.task')
         print(f'[MediaPipe] 首次运行，下载模型...')
-        urllib.request.urlretrieve(url, model_path)
+    
+    # MediaPipe heavy模型约30MB，验证文件大小（至少20MB）
+    if not model_path.exists() or model_path.stat().st_size < 20 * 1024 * 1024:
+        download_file_with_verify(url, model_path)
         print('[MediaPipe] 模型下载完成')
 
     # base64 → numpy
@@ -73,6 +84,7 @@ def detect_keypoints_mediapipe(image_b64: str) -> dict:
         parts[name] = {
             'x': round(p.x * w, 1),
             'y': round(p.y * h, 1),
+            'z': round(p.z, 3),  # MediaPipe提供相对深度（z坐标）
             'score': round(vis, 3),
         }
 
@@ -82,6 +94,7 @@ def detect_keypoints_mediapipe(image_b64: str) -> dict:
         parts['neck'] = {
             'x': round((ls['x'] + rs['x']) / 2, 1),
             'y': round((ls['y'] + rs['y']) / 2, 1),
+            'z': round((ls.get('z', 0) + rs.get('z', 0)) / 2, 3),
             'score': round((ls['score'] + rs['score']) / 2, 3),
         }
 
@@ -91,6 +104,7 @@ def detect_keypoints_mediapipe(image_b64: str) -> dict:
         parts['pelvis'] = {
             'x': round((lh['x'] + rh['x']) / 2, 1),
             'y': round((lh['y'] + rh['y']) / 2, 1),
+            'z': round((lh.get('z', 0) + rh.get('z', 0)) / 2, 3),
             'score': round((lh['score'] + rh['score']) / 2, 3),
         }
 

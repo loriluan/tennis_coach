@@ -1,30 +1,60 @@
 # -*- coding: utf-8 -*-
 import math
+from typing import Optional
 from .data import ANGLE_DEFS, ANGLE_THRESHOLDS, ANGLE_ADVICE, ANGLE_WEIGHTS
 
 
-def calc_angle(a, b, c) -> float | None:
-    """计算 a-b-c 三点以 b 为顶点的夹角（度）。"""
+def calc_angle(a, b, c, use_3d: bool = False) -> Optional[float]:
+    """计算 a-b-c 三点以 b 为顶点的夹角（度）。
+    
+    Args:
+        a, b, c: 关键点字典，包含 x, y 坐标，可选 z 坐标
+        use_3d: 是否使用3D坐标计算（需要z坐标）
+    
+    Returns:
+        角度（度），如果关键点缺失则返回 None
+    """
     if not (a and b and c):
         return None
-    ax, ay = a['x'] - b['x'], a['y'] - b['y']
-    cx, cy = c['x'] - b['x'], c['y'] - b['y']
-    dot = ax * cx + ay * cy
-    mag = math.sqrt(ax**2 + ay**2) * math.sqrt(cx**2 + cy**2)
+    
+    if use_3d and 'z' in a and 'z' in b and 'z' in c:
+        # 3D角度计算（使用x, y, z坐标）
+        ax, ay, az = a['x'] - b['x'], a['y'] - b['y'], a['z'] - b['z']
+        cx, cy, cz = c['x'] - b['x'], c['y'] - b['y'], c['z'] - b['z']
+        dot = ax * cx + ay * cy + az * cz
+        mag_a = math.sqrt(ax**2 + ay**2 + az**2)
+        mag_c = math.sqrt(cx**2 + cy**2 + cz**2)
+    else:
+        # 2D角度计算（仅使用x, y坐标）
+        ax, ay = a['x'] - b['x'], a['y'] - b['y']
+        cx, cy = c['x'] - b['x'], c['y'] - b['y']
+        dot = ax * cx + ay * cy
+        mag_a = math.sqrt(ax**2 + ay**2)
+        mag_c = math.sqrt(cx**2 + cy**2)
+    
+    mag = mag_a * mag_c
     if mag < 1e-6:
         return None
     cos_val = max(-1.0, min(1.0, dot / mag))
     return round(math.degrees(math.acos(cos_val)), 1)
 
 
-def extract_angles(parts: dict) -> dict:
-    """从关键点字典计算所有定义的角度。"""
+def extract_angles(parts: dict, use_3d: bool = False) -> dict:
+    """从关键点字典计算所有定义的角度。
+    
+    Args:
+        parts: 关键点字典
+        use_3d: 是否使用3D坐标计算（需要z坐标）
+    
+    Returns:
+        角度字典
+    """
     angles = {}
     for angle_name, (a_key, b_key, c_key) in ANGLE_DEFS.items():
         a = parts.get(a_key)
         b = parts.get(b_key)
         c = parts.get(c_key)
-        val = calc_angle(a, b, c)
+        val = calc_angle(a, b, c, use_3d=use_3d)
         if val is not None:
             angles[angle_name] = val
     return angles
@@ -89,9 +119,19 @@ def _nonlinear_score(issues: list, template_angles: dict) -> int:
     return score
 
 
-def evaluate(student_parts: dict, template: dict, action: str) -> dict:
-    """完整评估流程，返回报告字典。"""
-    student_angles = extract_angles(student_parts)
+def evaluate(student_parts: dict, template: dict, action: str, use_3d: bool = False) -> dict:
+    """完整评估流程，返回报告字典。
+    
+    Args:
+        student_parts: 学员关键点
+        template: 标准模板
+        action: 动作名称
+        use_3d: 是否使用3D角度计算
+    
+    Returns:
+        评估报告字典
+    """
+    student_angles = extract_angles(student_parts, use_3d=use_3d)
     template_angles = template.get('angles', {})
     issues = compare_to_template(student_angles, template_angles, action)
 

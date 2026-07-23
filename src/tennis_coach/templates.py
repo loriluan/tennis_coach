@@ -2,19 +2,20 @@
 import json
 from pathlib import Path
 
+from .utils import get_cached_templates, save_templates
+
 TEMPLATES_FILE = Path(__file__).resolve().parents[2] / 'data' / 'tennis_templates.json'
 
 
 def load_templates() -> dict:
-    if TEMPLATES_FILE.exists():
-        return json.loads(TEMPLATES_FILE.read_text(encoding='utf-8'))
-    return {}
+    """加载模板数据（使用内存缓存）。"""
+    return get_cached_templates(TEMPLATES_FILE)
 
 
 def save_template(action: str, angles: dict, sample_count: int):
     """保存或更新某动作的标准模板（多次训练取均值）。"""
     TEMPLATES_FILE.parent.mkdir(parents=True, exist_ok=True)
-    templates = load_templates()
+    templates = get_cached_templates(TEMPLATES_FILE)
 
     if action in templates:
         existing = templates[action]
@@ -28,15 +29,11 @@ def save_template(action: str, angles: dict, sample_count: int):
     else:
         templates[action] = {'angles': angles, 'sample_count': sample_count}
 
-    TEMPLATES_FILE.write_text(
-        json.dumps(templates, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
+    save_templates(TEMPLATES_FILE, templates)
     return templates[action]
 
 
 def delete_template(action: str):
-    templates = load_templates()
+    templates = get_cached_templates(TEMPLATES_FILE)
     templates.pop(action, None)
-    TEMPLATES_FILE.write_text(
-        json.dumps(templates, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
+    save_templates(TEMPLATES_FILE, templates)

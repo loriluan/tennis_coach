@@ -24,9 +24,11 @@
     <div id="panel-train" class="panel">
       <div class="card">
         <h2>录入标准动作</h2>
-        <p class="hint">上传标准技术动作照片，可多次上传同一动作以提高准确度（系统自动取均值）</p>
+        <p class="hint">上传标准技术动作照片或视频，系统自动提取关键点并保存为模板</p>
+        
+        <!-- 图片训练 -->
         <div class="form-row">
-          <label>动作类型</label>
+          <label>方式一：图片训练</label>
           <select id="train-action">
             <optgroup label="正手击球">
               <option>正手击球 - 准备</option>
@@ -60,6 +62,180 @@
         <p id="train-status" class="status hidden"></p>
         <p id="train-error" class="error hidden"></p>
         <div id="train-result" class="result-box hidden"></div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
+        
+        <!-- 视频训练 -->
+        <div class="form-row">
+          <label>方式二：视频训练（推荐）</label>
+        </div>
+        <p class="hint">上传标准动作视频，系统自动提取关键帧并选择最佳帧作为模板</p>
+        
+        <div class="form-row">
+          <label>动作类型</label>
+          <select id="train-video-action">
+            <optgroup label="正手击球">
+              <option>正手击球 - 准备</option>
+              <option>正手击球 - 引拍</option>
+              <option>正手击球 - 击球瞬间</option>
+              <option>正手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="反手击球">
+              <option>反手击球 - 准备</option>
+              <option>反手击球 - 引拍</option>
+              <option>反手击球 - 击球瞬间</option>
+              <option>反手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="发球">
+              <option>发球 - 抛球</option>
+              <option>发球 - 击球瞬间</option>
+              <option>发球 - 随挥</option>
+            </optgroup>
+            <optgroup label="截击">
+              <option>截击 - 击球瞬间</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>检测方案</label>
+          <select id="train-video-provider">
+            <option value="mediapipe">MediaPipe（推荐，支持3D）</option>
+            <option value="baidu">百度人体分析 API</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>模板策略</label>
+          <select id="train-video-strategy">
+            <option value="all">多帧平均（推荐，充分利用所有动作帧）</option>
+            <option value="best">最佳帧（选择得分最高的单帧）</option>
+            <option value="first">第一帧</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>分析设置</label>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <div>
+              <span style="font-size:12px;color:#666">最大帧数:</span>
+              <input type="number" id="video-max-frames" value="30" min="10" max="100" style="width:60px;padding:4px" />
+            </div>
+            <div>
+              <span style="font-size:12px;color:#666">帧间隔(秒):</span>
+              <input type="number" id="video-interval" value="0.5" min="0.5" max="3" step="0.1" style="width:60px;padding:4px" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="upload-area" id="train-video-upload">
+          <input type="file" id="train-video-input" accept="video/*" hidden />
+          <div id="train-video-placeholder">
+            <div class="upload-icon">🎬</div>
+            <p>点击或拖拽标准动作视频</p>
+            <p style="font-size:12px;color:#999;margin-top:8px">支持 MP4, MOV, AVI 等格式</p>
+          </div>
+          <video id="train-video-preview" class="hidden" controls style="max-width:100%;max-height:400px"></video>
+        </div>
+        
+        <button id="train-video-btn" class="btn-primary" disabled>从视频训练模板</button>
+        <p id="train-video-status" class="status hidden"></p>
+        <p id="train-video-error" class="error hidden"></p>
+        <div id="train-video-result" class="result-box hidden"></div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
+        
+        <!-- 批量视频训练 -->
+        <div class="form-row">
+          <label>方式三：批量连续训练（推荐）</label>
+        </div>
+        <p class="hint">上传一个包含多个动作阶段的视频，一次性训练多个模板（如：准备→引拍→击球→随挥）</p>
+        
+        <div class="form-row">
+          <label>选择要训练的动作（可多选）</label>
+          <div id="batch-actions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 准备" class="batch-action-checkbox" />
+              <span>正手击球 - 准备</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 引拍" class="batch-action-checkbox" />
+              <span>正手击球 - 引拍</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 击球瞬间" class="batch-action-checkbox" />
+              <span>正手击球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 随挥" class="batch-action-checkbox" />
+              <span>正手击球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 准备" class="batch-action-checkbox" />
+              <span>反手击球 - 准备</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 引拍" class="batch-action-checkbox" />
+              <span>反手击球 - 引拍</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 击球瞬间" class="batch-action-checkbox" />
+              <span>反手击球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 随挥" class="batch-action-checkbox" />
+              <span>反手击球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 抛球" class="batch-action-checkbox" />
+              <span>发球 - 抛球</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 击球瞬间" class="batch-action-checkbox" />
+              <span>发球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 随挥" class="batch-action-checkbox" />
+              <span>发球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="截击 - 击球瞬间" class="batch-action-checkbox" />
+              <span>截击 - 击球瞬间</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <label>检测方案</label>
+          <select id="train-batch-provider">
+            <option value="mediapipe">MediaPipe（推荐，支持3D）</option>
+            <option value="baidu">百度人体分析 API</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>模板策略</label>
+          <select id="train-batch-strategy">
+            <option value="all">多帧平均（推荐，充分利用所有动作帧）</option>
+            <option value="best">最佳帧（选择得分最高的单帧）</option>
+            <option value="first">第一帧</option>
+          </select>
+        </div>
+        
+        <div class="upload-area" id="train-batch-upload">
+          <input type="file" id="train-batch-input" accept="video/*" hidden />
+          <div id="train-batch-placeholder">
+            <div class="upload-icon">🎬</div>
+            <p>点击或拖拽包含多个动作的视频</p>
+            <p style="font-size:12px;color:#999;margin-top:8px">系统将自动为每个选中的动作训练模板</p>
+          </div>
+          <video id="train-batch-preview" class="hidden" controls style="max-width:100%;max-height:400px"></video>
+        </div>
+        
+        <button id="train-batch-btn" class="btn-primary" disabled>批量训练（多动作）</button>
+        <p id="train-batch-status" class="status hidden"></p>
+        <p id="train-batch-error" class="error hidden"></p>
+        <div id="train-batch-result" class="result-box hidden"></div>
       </div>
     </div>
 
@@ -67,11 +243,68 @@
     <div id="panel-eval" class="panel hidden">
       <div class="card">
         <h2>分析学员动作</h2>
-        <p class="hint">上传学员照片，系统自动识别动作阶段并与标准模板对比，输出评分和改进建议</p>
+        <p class="hint">上传学员照片或视频，系统自动识别动作阶段并与标准模板对比，输出评分和改进建议</p>
+        
         <div class="form-row">
           <label>学员姓名</label>
           <input type="text" id="eval-player" placeholder="输入姓名，方便查询进步曲线" />
         </div>
+        
+        <div class="form-row">
+          <label>拍摄角度</label>
+          <select id="eval-camera-angle">
+            <option value="">不限制（自动识别）</option>
+            <option value="正面">正面</option>
+            <option value="侧面">侧面</option>
+            <option value="背面">背面</option>
+            <option value="斜前方">斜前方</option>
+            <option value="斜后方">斜后方</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>动作类型</label>
+          <select id="eval-action-type">
+            <option value="">不限制（自动识别）</option>
+            <optgroup label="正手击球">
+              <option>正手击球 - 准备</option>
+              <option>正手击球 - 引拍</option>
+              <option>正手击球 - 击球瞬间</option>
+              <option>正手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="反手击球">
+              <option>反手击球 - 准备</option>
+              <option>反手击球 - 引拍</option>
+              <option>反手击球 - 击球瞬间</option>
+              <option>反手击球 - 随挥</option>
+            </optgroup>
+            <optgroup label="发球">
+              <option>发球 - 抛球</option>
+              <option>发球 - 击球瞬间</option>
+              <option>发球 - 随挥</option>
+            </optgroup>
+            <optgroup label="截击">
+              <option>截击 - 击球瞬间</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>检测方案</label>
+          <select id="eval-provider">
+            <option value="mediapipe">MediaPipe（推荐，支持3D）</option>
+            <option value="baidu">百度人体分析 API</option>
+          </select>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
+        
+        <!-- 图片评估 -->
+        <div class="form-row">
+          <label>方式一：图片评估</label>
+        </div>
+        <p class="hint">上传学员动作照片，系统自动分析动作质量</p>
+        
         <div class="upload-area" id="eval-upload">
           <input type="file" id="eval-img-input" accept="image/*" hidden />
           <div id="eval-placeholder"><div class="upload-icon">🎾</div><p>点击或拖拽学员照片</p></div>
@@ -82,6 +315,116 @@
         <p id="eval-status" class="status hidden"></p>
         <p id="eval-error" class="error hidden"></p>
         <div id="eval-report" class="hidden"></div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
+        
+        <!-- 视频评估 -->
+        <div class="form-row">
+          <label>方式二：视频评估（推荐）</label>
+        </div>
+        <p class="hint">上传学员动作视频，系统自动提取关键帧并逐帧分析，生成完整的动作评估报告（包含通义千问语义分析）</p>
+        
+        <div class="form-row">
+          <label>拍摄角度</label>
+          <select id="eval-video-camera-angle">
+            <option value="">不限制（自动识别）</option>
+            <option value="正面">正面</option>
+            <option value="侧面">侧面</option>
+            <option value="背面">背面</option>
+            <option value="斜前方">斜前方</option>
+            <option value="斜后方">斜后方</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <label>动作类型（可多选）</label>
+          <div id="eval-video-action-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 准备" class="eval-video-action-checkbox" />
+              <span>正手击球 - 准备</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 引拍" class="eval-video-action-checkbox" />
+              <span>正手击球 - 引拍</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 击球瞬间" class="eval-video-action-checkbox" />
+              <span>正手击球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="正手击球 - 随挥" class="eval-video-action-checkbox" />
+              <span>正手击球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 准备" class="eval-video-action-checkbox" />
+              <span>反手击球 - 准备</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 引拍" class="eval-video-action-checkbox" />
+              <span>反手击球 - 引拍</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 击球瞬间" class="eval-video-action-checkbox" />
+              <span>反手击球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="反手击球 - 随挥" class="eval-video-action-checkbox" />
+              <span>反手击球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 抛球" class="eval-video-action-checkbox" />
+              <span>发球 - 抛球</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 击球瞬间" class="eval-video-action-checkbox" />
+              <span>发球 - 击球瞬间</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="发球 - 随挥" class="eval-video-action-checkbox" />
+              <span>发球 - 随挥</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" value="截击 - 击球瞬间" class="eval-video-action-checkbox" />
+              <span>截击 - 击球瞬间</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <label>分析设置</label>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <div>
+              <span style="font-size:12px;color:#666">最大帧数:</span>
+              <input type="number" id="eval-video-max-frames" value="50" min="10" max="100" style="width:60px;padding:4px" />
+            </div>
+            <div>
+              <span style="font-size:12px;color:#666">帧间隔(秒):</span>
+              <input type="number" id="eval-video-interval" value="0.5" min="0.5" max="3" step="0.1" style="width:60px;padding:4px" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="upload-area" id="eval-video-upload">
+          <input type="file" id="eval-video-input" accept="video/*" hidden />
+          <div id="eval-video-placeholder">
+            <div class="upload-icon">🎬</div>
+            <p>点击或拖拽学员视频</p>
+            <p style="font-size:12px;color:#999;margin-top:8px">支持 MP4, MOV, AVI 等格式</p>
+          </div>
+          <video id="eval-video-preview" class="hidden" controls style="max-width:100%;max-height:400px"></video>
+        </div>
+        
+        <button id="eval-video-btn" class="btn-primary" disabled>开始视频评估</button>
+        <p id="eval-video-status" class="status hidden"></p>
+        <p id="eval-video-error" class="error hidden"></p>
+        
+        <div id="eval-video-result" class="hidden">
+          <div class="result-box">
+            <h3>视频评估结果</h3>
+            <div id="eval-video-summary"></div>
+            <div id="eval-video-frames-list"></div>
+          </div>
+        </div>
       </div>
     </div>
 

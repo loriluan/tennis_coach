@@ -8,7 +8,7 @@ from pathlib import Path
 
 def _get_access_token():
     from pathlib import Path
-    import requests
+    import os
     root = Path(__file__).resolve().parents[2]
     env_path = root / '.env'
     api_key = secret_key = None
@@ -22,13 +22,10 @@ def _get_access_token():
     secret_key = secret_key or os.environ.get('BAIDU_SECRET_KEY')
     if not api_key or not secret_key:
         raise RuntimeError('BAIDU_API_KEY 或 BAIDU_SECRET_KEY 未配置')
-    resp = requests.get(
-        'https://aip.baidubce.com/oauth/2.0/token',
-        params={'grant_type': 'client_credentials',
-                'client_id': api_key, 'client_secret': secret_key},
-        timeout=10,
-    )
-    return resp.json()['access_token']
+    
+    # 使用缓存token
+    from .utils import get_cached_baidu_token
+    return get_cached_baidu_token(api_key, secret_key)
 
 
 def detect_keypoints(image_b64: str) -> dict:
