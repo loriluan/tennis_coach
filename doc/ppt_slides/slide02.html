@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:26pt 44pt 22pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:18pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;flex-shrink:0;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.cards{display:flex;gap:12pt;flex:1;align-items:stretch;}
+.card{flex:1;background:#1E3A55;border-radius:10pt;padding:20pt 16pt;display:flex;flex-direction:column;border-top:2pt solid;min-height:0;}
+.card.c1{border-color:#00D4FF;}
+.card.c2{border-color:#F59E0B;}
+.card.c3{border-color:#10B981;}
+.icon{font-size:24pt;margin-bottom:10pt;}
+.card-title{font-size:14pt;color:#fff;font-weight:bold;margin-bottom:12pt;}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:12pt;}
+.card ul li{font-size:14pt;color:#CBD5E1;padding-left:10pt;position:relative;line-height:1.6;}
+.card ul li::before{content:"▸";position:absolute;left:0;font-size:12pt;top:1pt;}
+.c1 ul li::before{color:#00D4FF;}
+.c2 ul li::before{color:#F59E0B;}
+.c3 ul li::before{color:#10B981;}
+.card .footer{margin-top:auto;padding-top:14pt;font-size:13pt;font-weight:bold;}
+.c1 .footer{color:#00D4FF;}
+.c2 .footer{color:#F59E0B;}
+.c3 .footer{color:#10B981;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>研究背景</h2>
+</div>
+<div class="cards">
+  <div class="card c1">
+    <div class="icon"><p>🎾</p></div>
+    <p class="card-title">训练痛点</p>
+    <ul>
+      <li>无教练难发现偏差</li>
+      <li>错误强化成记忆</li>
+      <li>回放缺乏量化依据</li>
+      <li>纠正成本随时增加</li>
+    </ul>
+    <p class="footer">→ 需客观反馈机制</p>
+  </div>
+  <div class="card c2">
+    <div class="icon"><p>💰</p></div>
+    <p class="card-title">资源困境</p>
+    <ul>
+      <li>教练稀缺费用高</li>
+      <li>爱好者难获持续指导</li>
+      <li>缺客观量化评估</li>
+      <li>低成本工具极稀缺</li>
+    </ul>
+    <p class="footer">→ 需低成本辅助方案</p>
+  </div>
+  <div class="card c3">
+    <div class="icon"><p>🔬</p></div>
+    <p class="card-title">技术空白</p>
+    <ul>
+      <li>网球专项系统少见</li>
+      <li>现有研究停留验证层</li>
+      <li>单引擎需手动标注</li>
+      <li>几何与语义未融合</li>
+    </ul>
+    <p class="footer">→ 需实用落地系统</p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:16pt 36pt 36pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:12pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.arch{display:flex;flex-direction:column;gap:4pt;flex:1;}
+.row{display:flex;align-items:center;gap:6pt;}
+.layer-label{width:50pt;font-size:12pt;color:#94A3B8;text-align:right;flex-shrink:0;white-space:nowrap;}
+.blocks{display:flex;gap:4pt;flex:1;align-items:center;}
+.block{border-radius:5pt;padding:6pt 8pt;text-align:center;flex:1;border:1pt solid;}
+.block p{font-size:14pt;font-weight:bold;}
+.block .sub{display:none;}
+.arr-h{font-size:13pt;color:#475569;flex-shrink:0;}
+.arr-v{text-align:center;font-size:13pt;color:#475569;margin-left:42pt;}
+/* 统一柔和蓝灰色调 */
+.in   {background:rgba(56,189,248,0.07); border-color:rgba(56,189,248,0.25); color:#E2E8F0;}
+.det  {background:rgba(99,179,237,0.07); border-color:rgba(99,179,237,0.25); color:#E2E8F0;}
+.calc {background:rgba(100,210,200,0.07);border-color:rgba(100,210,200,0.25);color:#E2E8F0;}
+.eval {background:rgba(129,212,250,0.07);border-color:rgba(129,212,250,0.25);color:#E2E8F0;}
+.store{background:rgba(100,180,220,0.07);border-color:rgba(100,180,220,0.25);color:#E2E8F0;}
+.out  {background:rgba(0,212,255,0.10);  border-color:rgba(0,212,255,0.35);  color:#E2E8F0;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>系统架构</h2>
+</div>
+<div class="arch">
+  <div class="row">
+    <p class="layer-label">输入层</p>
+    <div class="blocks">
+      <div class="block in"><p>静态图像（JPG/PNG）</p></div>
+      <p class="arr-h">或</p>
+      <div class="block in"><p>视频文件（MP4等）</p></div>
+    </div>
+  </div>
+  <div class="arr-v"><p>↓</p></div>
+  <div class="row">
+    <p class="layer-label">检测层</p>
+    <div class="blocks">
+      <div class="block det"><p>百度人体分析 API</p></div>
+      <p class="arr-h" style="font-size:13pt;color:#475569;">自动切换</p>
+      <div class="block det"><p>MediaPipe Pose（本地）</p></div>
+    </div>
+  </div>
+  <div class="arr-v"><p>↓</p></div>
+  <div class="row">
+    <p class="layer-label">计算层</p>
+    <div class="blocks">
+      <div class="block calc" style="flex:1"><p>关节角度计算（calc_angle）</p></div>
+    </div>
+  </div>
+  <div class="arr-v"><p>↓</p></div>
+  <div class="row">
+    <p class="layer-label">评估层</p>
+    <div class="blocks">
+      <div class="block eval"><p>加权RMSE模板匹配</p><span class="sub">自动识别动作阶段</span></div>
+      <p class="arr-h">→</p>
+      <div class="block eval"><p>偏差分析 + 评分</p><span class="sub">平方惩罚·0–100分</span></div>
+      <p class="arr-h">→</p>
+      <div class="block eval"><p>LLM语义建议生成</p><span class="sub">qwen-vl-max·几何+语义互补</span></div>
+    </div>
+  </div>
+  <div class="arr-v"><p>↓</p></div>
+  <div class="row">
+    <p class="layer-label">存储层</p>
+    <div class="blocks">
+      <div class="block store"><p>标准动作模板库</p><span class="sub">tennis_templates.json·多次训练加权合并</span></div>
+      <p class="arr-h">↔</p>
+      <div class="block store"><p>历史评估记录</p><span class="sub">评分·问题列表·建议·训练进度追踪</span></div>
+    </div>
+  </div>
+  <div class="arr-v"><p>↓</p></div>
+  <div class="row">
+    <p class="layer-label">输出层</p>
+    <div class="blocks">
+      <div class="block out"><p>量化评分（0–100）</p></div>
+      <div class="block out"><p>问题关节列表</p></div>
+      <div class="block out"><p>自然语言改进建议</p></div>
+    </div>
+  </div>
+</div>
+</body></html>

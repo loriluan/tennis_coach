@@ -1,0 +1,61 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:22pt 36pt 16pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:12pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:12pt;flex:1;}
+.left{flex:0.7;display:flex;flex-direction:column;gap:8pt;}
+.right{flex:1.3;border-radius:8pt;border:1pt solid #1E3A5F;overflow:hidden;}
+/* 三个训练模式 */
+.modes{display:flex;gap:7pt;}
+.mode{flex:1;background:#1E3A55;border-radius:7pt;padding:7pt 8pt;border-top:2pt solid;}
+.m1{border-top-color:#00D4FF;}
+.m2{border-top-color:#10B981;}
+.m3{border-top-color:#7C3AED;}
+.mode-title{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:2pt;}
+.mode-desc{font-size:13pt;color:#CBD5E1;line-height:1.4;}
+/* 两种检测方式 */
+.engines{display:flex;flex-direction:column;gap:6pt;flex:1;}
+.engine-box{flex:1;background:#1E3A55;border-radius:7pt;padding:7pt 10pt;border-left:2pt solid;}
+.e1{border-color:#00D4FF;}
+.e2{border-color:#10B981;}
+.engine-title{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:3pt;}
+.e1 .engine-title span{color:#00D4FF;}
+.e2 .engine-title span{color:#10B981;}
+.code-line{font-size:12pt;color:#CBD5E1;font-family:'Courier New',monospace;line-height:1.7;}
+.key{color:#A78BFA;}
+.val{color:#10B981;}
+.badge{display:inline-block;font-size:12pt;padding:2pt 6pt;border-radius:4pt;margin-top:3pt;}
+.b1{background:rgba(0,212,255,0.1);color:#00D4FF;border:1pt solid rgba(0,212,255,0.25);}
+.b2{background:rgba(16,185,129,0.1);color:#10B981;border:1pt solid rgba(16,185,129,0.25);}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>训练方式与模板库</h2>
+</div>
+<div class="content">
+  <div class="left">
+    <div class="modes">
+      <div class="mode m1"><p class="mode-title">📸 图片训练</p><p class="mode-desc">单张 → 关键点 → 模板</p></div>
+      <div class="mode m2"><p class="mode-title">🎬 视频训练</p><p class="mode-desc">逐帧 → 均值 → 模板</p></div>
+      <div class="mode m3"><p class="mode-title">📦 批量训练</p><p class="mode-desc">一视频 → 多阶段模板</p></div>
+    </div>
+    <div class="engines">
+      <div class="engine-box e1">
+        <p class="engine-title">☁ 方式一：<span>百度人体分析 API</span></p>
+        <p class="code-line"><span class="key">provider</span> = <span class="val">"baidu"</span> &nbsp; POST aip.baidubce.com</p>
+        <div class="badge b1"><p>需要 API KEY · 输出 2D</p></div>
+      </div>
+      <div class="engine-box e2">
+        <p class="engine-title">💻 方式二：<span>MediaPipe Pose</span></p>
+        <p class="code-line"><span class="key">provider</span> = <span class="val">"mediapipe"</span> &nbsp; pose_landmarker_heavy</p>
+        <div class="badge b2"><p>无需网络 · 输出 3D</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="right" id="train-screenshot"></div>
+</div>
+</body></html>

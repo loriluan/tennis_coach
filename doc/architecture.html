@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>Tennis Coach — 系统架构图</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f8fafc; color: #1e293b;
+  padding: 36px 24px 48px;
+}
+h1 {
+  text-align: center; font-size: 1.15rem; font-weight: 700;
+  margin-bottom: 32px; letter-spacing: 0.05em;
+}
+
+/* ── Overall layout ── */
+.arch {
+  max-width: 860px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 0;
+}
+
+/* ── Row ── */
+.row {
+  display: flex; justify-content: center;
+  align-items: stretch; gap: 0;
+}
+
+/* ── Layer label (left side) ── */
+.layer-label {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-size: 0.72rem; font-weight: 600; color: #64748b;
+  letter-spacing: 0.12em;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 6px; min-width: 22px;
+}
+
+/* ── Cells ── */
+.cells {
+  flex: 1; display: flex; gap: 12px;
+  padding: 10px 10px;
+}
+
+/* ── Module box ── */
+.mod {
+  flex: 1; border-radius: 10px; padding: 12px 10px 10px;
+  border: 1.5px solid; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  position: relative;
+}
+.mod .icon { font-size: 1.4rem; line-height: 1; }
+.mod .name { font-size: 0.82rem; font-weight: 700; }
+.mod .desc { font-size: 0.68rem; opacity: 0.75; line-height: 1.4; }
+
+/* ── Module colors ── */
+.m-blue   { background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; }
+.m-green  { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+.m-purple { background:#faf5ff; border-color:#d8b4fe; color:#7e22ce; }
+.m-orange { background:#fff7ed; border-color:#fdba74; color:#c2410c; }
+.m-yellow { background:#fefce8; border-color:#fde047; color:#854d0e; }
+.m-sky    { background:#f0f9ff; border-color:#7dd3fc; color:#0369a1; }
+.m-pink   { background:#fdf2f8; border-color:#f0abfc; color:#86198f; }
+.m-gray   { background:#f8fafc; border-color:#cbd5e1; color:#475569; }
+.m-red    { background:#fff1f2; border-color:#fca5a5; color:#b91c1c; }
+
+/* ── Arrow rows ── */
+.arrow-row {
+  display: flex; justify-content: center;
+  align-items: center; gap: 12px;
+  padding: 0 10px;
+}
+.arrow-cell {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; height: 28px; position: relative;
+}
+.arrow-cell.down::before {
+  content: ''; position: absolute; left: 50%; top: 0;
+  width: 1.5px; height: 18px; background: #94a3b8;
+  transform: translateX(-50%);
+}
+.arrow-cell.down::after {
+  content: ''; position: absolute; left: 50%; top: 18px;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #94a3b8;
+}
+.arrow-cell.empty { visibility: hidden; }
+.arrow-label {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; font-size: 0.6rem; color: #94a3b8;
+  background: #f8fafc; padding: 0 3px; top: -8px;
+}
+
+/* ── Horizontal connector inside a row ── */
+.h-arrow {
+  display: flex; align-items: center; min-width: 32px; justify-content: center;
+  color: #94a3b8; font-size: 0.9rem; padding-top: 8px;
+}
+
+/* ── Data store box ── */
+.store {
+  border: 1.5px dashed #94a3b8; border-radius: 8px;
+  background: #f1f5f9; color: #475569;
+  padding: 8px 14px; font-size: 0.75rem; font-weight: 600;
+  text-align: center; display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+}
+.store .icon { font-size: 1.1rem; }
+
+/* ── Input/Output boxes ── */
+.io {
+  border-radius: 999px; padding: 6px 18px;
+  font-size: 0.78rem; font-weight: 600; text-align: center;
+  border: 1.5px solid;
+}
+.io-in  { background:#e0f2fe; border-color:#38bdf8; color:#0369a1; }
+.io-out { background:#dcfce7; border-color:#4ade80; color:#15803d; }
+
+/* ── Section divider ── */
+.divider {
+  height: 1px; background: #e2e8f0;
+  margin: 4px 32px;
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex; gap: 20px; justify-content: center;
+  margin-top: 24px; flex-wrap: wrap;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; color: #64748b;
+}
+.legend-box {
+  width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid;
+}
+.legend-line {
+  width: 22px; height: 1.5px; background: #94a3b8;
+}
+.legend-dline {
+  width: 22px; height: 0; border-top: 1.5px dashed #94a3b8;
+}
+</style>
+</head>
+<body>
+
+<h1>网球动作智能教练系统 — 系统架构图</h1>
+
+<div class="arch">
+
+  <!-- ── 输入层 ── -->
+  <div class="row">
+    <div class="layer-label">输　入</div>
+    <div class="cells" style="justify-content:center; gap:24px;">
+      <div class="io io-in">📷 静态图像</div>
+      <div class="io io-in">🎬 视频帧</div>
+    </div>
+  </div>
+
+  <!-- arrow down -->
+  <div class="arrow-row" style="padding-left:32px;">
+    <div class="arrow-cell down"></div>
+  </div>
+
+  <!-- ── 关键点检测层 ── -->
+  <div class="row">
+    <div class="layer-label">检　测</div>
+    <div class="cells">
+      <div class="mod m-blue">
+        <div class="icon">☁️</div>
+        <div class="name">百度人体分析 API</div>
+        <div class="desc">云端检测·强鲁棒性<br>网络可用时优先调用</div>
+      </div>
+      <div class="h-arrow">⇄<br><span style="font-size:0.58rem;color:#94a3b8;">自动切换</span></div>
+      <div class="mod m-sky">
+        <div class="icon">💻</div>
+        <div class="name">MediaPipe Pose</div>
+        <div class="desc">本地模型·离线运行<br>网络不可用时启用</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow + label -->
+  <div class="arrow-row" style="padding-left:32px;">
+    <div class="arrow-cell down">
+      <span class="arrow-label">17 关键点坐标</span>
+    </div>
+  </div>
+
+  <!-- ── 计算层 ── -->
+  <div class="row">
+    <div class="layer-label">计　算</div>
+    <div class="cells">
+      <div class="mod m-purple">
+        <div class="icon">📐</div>
+        <div class="name">角度计算模块</div>
+        <div class="desc">向量点积法<br>7 个核心关节角度<br>2D / 3D 双模式</div>
+      </div>
+      <div class="h-arrow">→</div>
+      <div class="mod m-orange">
+        <div class="icon">🗂️</div>
+        <div class="name">模板管理模块</div>
+        <div class="desc">标准角度模板库<br>加权 RMSE 匹配<br>自动阶段识别</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow + label -->
+  <div class="arrow-row" style="padding-left:32px;">
+    <div class="arrow-cell down">
+      <span class="arrow-label">角度偏差 + 阶段标签</span>
+    </div>
+  </div>
+
+  <!-- ── 评分与建议层 ── -->
+  <div class="row">
+    <div class="layer-label">评　估</div>
+    <div class="cells">
+      <div class="mod m-green">
+        <div class="icon">🏅</div>
+        <div class="name">评分模块</div>
+        <div class="desc">加权平方惩罚<br>0–100 分量化评分<br>问题关节排序</div>
+      </div>
+      <div class="h-arrow">→</div>
+      <div class="mod m-pink">
+        <div class="icon">🤖</div>
+        <div class="name">建议生成模块</div>
+        <div class="desc">通义千问多模态 LLM<br>自然语言改进建议<br>几何 + 语义互补</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow + label -->
+  <div class="arrow-row" style="padding-left:32px;">
+    <div class="arrow-cell down">
+      <span class="arrow-label">评估结果</span>
+    </div>
+  </div>
+
+  <!-- ── 存储层 ── -->
+  <div class="row">
+    <div class="layer-label">存　储</div>
+    <div class="cells" style="justify-content:center;">
+      <div class="mod m-yellow" style="max-width:260px;">
+        <div class="icon">🗃️</div>
+        <div class="name">历史记录模块</div>
+        <div class="desc">评估结果持久化<br>训练进度追踪</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow down -->
+  <div class="arrow-row" style="padding-left:32px;">
+    <div class="arrow-cell down"></div>
+  </div>
+
+  <!-- ── 输出层 ── -->
+  <div class="row">
+    <div class="layer-label">输　出</div>
+    <div class="cells" style="justify-content:center; gap:16px;">
+      <div class="io io-out">📊 量化评分</div>
+      <div class="io io-out">⚠️ 问题关节列表</div>
+      <div class="io io-out">💬 自然语言建议</div>
+    </div>
+  </div>
+
+</div><!-- end .arch -->
+
+<!-- ── Legend ── -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-box" style="background:#eff6ff;border-color:#93c5fd;"></div>关键点检测
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#faf5ff;border-color:#d8b4fe;"></div>角度计算
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#fff7ed;border-color:#fdba74;"></div>模板管理
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#f0fdf4;border-color:#86efac;"></div>评分
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#fdf2f8;border-color:#f0abfc;"></div>语义建议
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#fefce8;border-color:#fde047;"></div>历史记录
+  </div>
+  <div class="legend-item">
+    <div class="legend-line"></div>数据流向
+  </div>
+</div>
+
+</body>
+</html>

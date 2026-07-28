@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:22pt 36pt 16pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:12pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:14pt;flex:1;}
+.left{flex:1;display:flex;flex-direction:column;gap:9pt;}
+.right{flex:1;border-radius:8pt;border:1pt solid #1E3A5F;overflow:hidden;}
+.step{background:#1E3A55;border-radius:7pt;padding:10pt 13pt;border-left:2pt solid #10B981;display:flex;align-items:flex-start;gap:10pt;}
+.num{min-width:22pt;height:22pt;border-radius:50%;background:#10B981;color:#1A3550;font-size:12pt;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
+.num p{margin:0;padding:0;line-height:1;}
+.stitle{font-size:14pt;color:#E2E8F0;font-weight:bold;margin-bottom:3pt;}
+.sdesc{font-size:13pt;color:#CBD5E1;line-height:1.4;}
+.tag{display:inline-block;font-size:12pt;padding:2pt 8pt;border-radius:4pt;margin-top:4pt;background:rgba(16,185,129,0.1);color:#10B981;border:1pt solid rgba(16,185,129,0.25);}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>评估模式：完整流程</h2>
+</div>
+<div class="content">
+  <div class="left">
+    <div class="step">
+      <div class="num"><p>1</p></div>
+      <div><p class="stitle">上传图片或视频</p><p class="sdesc">选学员、角度、动作类型及检测方案</p></div>
+    </div>
+    <div class="step">
+      <div class="num"><p>2</p></div>
+      <div><p class="stitle">自动识别动作阶段</p><p class="sdesc">加权RMSE匹配所有模板，找最相似阶段</p><div class="tag"><p>无需手动标注</p></div></div>
+    </div>
+    <div class="step">
+      <div class="num"><p>3</p></div>
+      <div><p class="stitle">量化评分与问题列表</p><p class="sdesc">0–100分，问题关节按严重程度排序</p></div>
+    </div>
+    <div class="step">
+      <div class="num"><p>4</p></div>
+      <div><p class="stitle">LLM语义建议（可选）</p><p class="sdesc">通义千问 qwen-vl-max 分析握拍等细节</p></div>
+    </div>
+  </div>
+  <div class="right" id="eval-screenshot"></div>
+</div>
+</body></html>

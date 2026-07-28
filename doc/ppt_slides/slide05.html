@@ -1,0 +1,55 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:22pt 36pt 30pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:14pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:10pt;flex:1;}
+.col{flex:1;background:#1E3A55;border-radius:8pt;padding:14pt;}
+.mid{flex:1.4;border-radius:8pt;border:1pt solid #1E3A5F;overflow:hidden;}
+.col-hdr{border-radius:5pt;padding:5pt 10pt;margin-bottom:10pt;}
+.col-hdr.c1{background:rgba(0,212,255,0.15);border:1pt solid rgba(0,212,255,0.3);}
+.col-hdr.c2{background:rgba(16,185,129,0.15);border:1pt solid rgba(16,185,129,0.3);}
+.col-hdr .htitle{font-size:13pt;font-weight:bold;color:#fff;}
+.col ul{list-style:none;}
+.col ul li{font-size:14pt;color:#CBD5E1;line-height:2;padding-left:10pt;position:relative;}
+.c1 ul li::before{content:"✓";position:absolute;left:0;color:#00D4FF;font-size:12pt;}
+.c2 ul li::before{content:"✓";position:absolute;left:0;color:#10B981;font-size:12pt;}
+.badge{display:inline-block;font-size:13pt;padding:3pt 9pt;border-radius:4pt;margin-top:10pt;}
+.badge.b1{background:rgba(0,212,255,0.15);color:#00D4FF;border:1pt solid rgba(0,212,255,0.3);}
+.badge.b2{background:rgba(16,185,129,0.15);color:#10B981;border:1pt solid rgba(16,185,129,0.3);}
+.bottom{margin-top:8pt;background:#1E3A55;border-radius:6pt;padding:7pt 14pt;border-left:2pt solid #00D4FF;}
+.bottom p{font-size:13pt;color:#CBD5E1;}
+.bottom span{color:#00D4FF;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>双引擎关键点检测架构</h2>
+</div>
+<div class="content">
+  <div class="col">
+    <div class="col-hdr c1"><p class="htitle">☁ 百度人体分析 API</p></div>
+    <ul>
+      <li>云端推理，鲁棒性强</li>
+      <li>复杂背景表现更优</li>
+      <li>输出 17 关键点 (x, y)</li>
+      <li>需网络连接</li>
+    </ul>
+    <div class="badge b1"><p>在线 · 2D</p></div>
+  </div>
+  <div class="mid" id="compare-screenshot"></div>
+  <div class="col">
+    <div class="col-hdr c2"><p class="htitle">💻 MediaPipe Pose</p></div>
+    <ul>
+      <li>完全离线运行</li>
+      <li>输出 3D 坐标 (x,y,z)</li>
+      <li>33点映射统一17点格式</li>
+      <li>合成 neck/pelvis 虚拟点</li>
+    </ul>
+    <div class="badge b2"><p>离线 · 3D</p></div>
+  </div>
+</div>
+<div class="bottom"><p>两套方案输出<span>统一格式</span>，角度计算与评分模块无缝复用</p></div>
+</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:28pt 44pt 20pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:20pt;}
+h2{font-size:20pt;color:#fff;font-weight:bold;}
+.accent{width:4pt;height:22pt;background:#00D4FF;border-radius:2pt;flex-shrink:0;}
+.grid{display:flex;gap:10pt;flex:1;}
+.sec{flex:1;display:flex;flex-direction:column;gap:6pt;}
+.sec-hdr{border-radius:6pt;padding:7pt 12pt;display:flex;align-items:center;gap:8pt;}
+.sec-hdr.c1{background:rgba(0,212,255,0.15);border:1pt solid rgba(0,212,255,0.3);}
+.sec-hdr.c2{background:rgba(16,185,129,0.15);border:1pt solid rgba(16,185,129,0.3);}
+.sec-hdr.c3{background:rgba(245,158,11,0.15);border:1pt solid rgba(245,158,11,0.3);}
+.sec-hdr .snum{font-size:13pt;font-weight:bold;min-width:18pt;height:18pt;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.c1 .snum{background:#00D4FF;color:#1A3550;}
+.c2 .snum{background:#10B981;color:#1A3550;}
+.c3 .snum{background:#F59E0B;color:#1A3550;}
+.sec-hdr p{font-size:14pt;font-weight:bold;color:#fff;}
+.item{background:#1E3A55;border-radius:5pt;padding:6pt 10pt;display:flex;align-items:center;gap:7pt;}
+.dot{width:5pt;height:5pt;border-radius:50%;flex-shrink:0;}
+.c1-dot{background:#00D4FF;}
+.c2-dot{background:#10B981;}
+.c3-dot{background:#F59E0B;}
+.item p{font-size:13pt;color:#CBD5E1;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  <h2>目录</h2>
+</div>
+<div class="grid">
+  <div class="sec">
+    <div class="sec-hdr c1"><div class="snum"><p>一</p></div><p>项目目标</p></div>
+    <div class="item"><div class="dot c1-dot"></div><p>研究背景</p></div>
+    <div class="item"><div class="dot c1-dot"></div><p>目标与意义</p></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr c2"><div class="snum"><p>二</p></div><p>研究方法</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>技术思路总览</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>训练方式与模板库</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>双引擎关键点检测</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>评估模式</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>核心算法</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>大模型语义分析</p></div>
+    <div class="item"><div class="dot c2-dot"></div><p>系统架构</p></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr c3"><div class="snum"><p>三</p></div><p>成果展示</p></div>
+    <div class="item"><div class="dot c3-dot"></div><p>四组实验设计与结果</p></div>
+    <div class="item"><div class="dot c3-dot"></div><p>实验结果展示</p></div>
+    <div class="item"><div class="dot c3-dot"></div><p>历史记录与进步追踪</p></div>
+    <div class="item"><div class="dot c3-dot"></div><p>总结与展望</p></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>pipeline_paper</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  font-family: 'SimSun', 'STSong', 'Times New Roman', serif;
+  padding: 40px 48px 48px;
+  width: 900px;
+}
+h2 {
+  text-align: center; font-size: 1.05rem; font-weight: bold;
+  letter-spacing: 0.08em; margin-bottom: 6px;
+}
+.fig-cap {
+  text-align: center; font-size: 0.78rem; color: #444;
+  margin-bottom: 28px; letter-spacing: 0.04em;
+}
+
+.pipeline { display: flex; gap: 0; justify-content: center; align-items: flex-start; }
+
+.lane { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 18px; }
+.divider { width: 1px; background: #bbb; align-self: stretch; flex-shrink: 0; }
+
+/* lane header */
+.lane-title {
+  font-size: 0.82rem; font-weight: bold; border: 1.5px solid #333;
+  padding: 4px 18px; margin-bottom: 14px; background: #f0f0f0;
+  letter-spacing: 0.06em;
+}
+
+/* standard flowchart shapes */
+.fc-io {       /* parallelogram — input/output */
+  width: 100%; text-align: center; font-size: 0.8rem;
+  padding: 7px 8px; border: 1.5px solid #333; background: #fafafa;
+  transform: skewX(-10deg); position: relative;
+}
+.fc-io span { display: inline-block; transform: skewX(10deg); }
+
+.fc-process { /* rectangle */
+  width: 100%; text-align: center; font-size: 0.8rem;
+  padding: 7px 10px; border: 1.5px solid #333; background: #fff;
+}
+.fc-process .sub { display: block; font-size: 0.67rem; color: #555; margin-top: 2px; font-family: 'Arial', sans-serif; }
+
+.fc-decision-wrap {
+  width: 100%; display: flex; flex-direction: column; align-items: center;
+}
+.fc-decision {
+  width: 100%; text-align: center; font-size: 0.8rem;
+  padding: 7px 10px; border: 1.5px solid #333; background: #f8f8f8;
+  transform: skewX(-10deg);
+}
+.fc-decision span { display: inline-block; transform: skewX(10deg); }
+
+.fc-db { /* database / storage — rectangle with double top line */
+  width: 100%; text-align: center; font-size: 0.8rem;
+  padding: 7px 10px; border: 1.5px solid #333; background: #f5f5f5;
+  border-top: 4px double #333;
+}
+.fc-db .sub { display: block; font-size: 0.67rem; color: #555; margin-top: 2px; font-family: 'Arial', sans-serif; }
+
+/* arrow */
+.arrow { width: 1px; height: 14px; background: #555; margin: 0 auto; position: relative; flex-shrink: 0; }
+.arrow::after {
+  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid #555;
+}
+.arrow-sm { height: 10px; }
+
+/* note label beside arrow */
+.arrow-wrap { display: flex; align-items: flex-start; width: 100%; justify-content: center; }
+.arrow-label { font-size: 0.62rem; color: #666; margin-left: 4px; margin-top: 2px; font-family: 'Arial', sans-serif; }
+</style>
+</head>
+<body>
+
+<h2>基于计算机视觉的网球动作评估系统流程</h2>
+<p class="fig-cap">图1 &nbsp;系统整体处理流程图</p>
+
+<div class="pipeline">
+
+  <!-- 训练路径 -->
+  <div class="lane">
+    <div class="lane-title">训练路径</div>
+
+    <div class="fc-io"><span>输入：图片 / 视频文件</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">关键帧提取（视频）<span class="sub">均匀采样，最大30帧</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">人体姿态关键点检测<span class="sub">MediaPipe Pose（3D）/ 百度 API（2D）</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">关节角度计算<span class="sub">肩、肘、腕、髋、膝等15+角度</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-decision-wrap">
+      <div class="fc-decision"><span>多帧角度均值合并（视频）</span></div>
+    </div>
+    <div class="arrow"></div>
+
+    <div class="fc-db">保存标准动作模板<span class="sub">多次训练加权平均合并</span></div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 评估路径 -->
+  <div class="lane">
+    <div class="lane-title">评估路径</div>
+
+    <div class="fc-io"><span>输入：图片 / 视频文件</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">关键帧提取（视频）<span class="sub">均匀采样，最大20帧</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">人体姿态关键点检测<span class="sub">MediaPipe Pose（3D）/ 百度 API（2D）</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">关节角度计算</div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">加权 RMSE 模板匹配<span class="sub">肩、肘等关键角度权重更高</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">逐角度偏差分析<span class="sub">超出阈值 → 问题列表，排序</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">非线性综合评分<span class="sub">平方惩罚，得分范围 0–100</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-process">大模型视觉语义分析<span class="sub">通义千问 qwen-vl-max（可选）</span></div>
+    <div class="arrow"></div>
+
+    <div class="fc-db">输出评估报告 &amp; 保存历史记录</div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

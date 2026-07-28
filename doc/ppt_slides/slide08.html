@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:28pt 44pt 22pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:16pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:14pt;flex:1;}
+.left{flex:1;display:flex;flex-direction:column;gap:10pt;}
+.right{flex:1;background:#1E3A55;border-radius:8pt;padding:16pt;}
+.box{background:#1E3A55;border-radius:8pt;padding:13pt;}
+.tags{display:flex;align-items:center;gap:8pt;margin-bottom:8pt;}
+.tag{font-size:13pt;padding:2pt 8pt;border-radius:4pt;}
+.t1{background:rgba(0,212,255,0.15);color:#00D4FF;border:1pt solid rgba(0,212,255,0.3);}
+.t2{background:rgba(16,185,129,0.15);color:#10B981;border:1pt solid rgba(16,185,129,0.3);}
+.plus{color:#CBD5E1;font-size:13pt;}
+.box p{font-size:13pt;color:#CBD5E1;line-height:1.6;}
+.box strong{color:#E2E8F0;}
+.right .rtitle{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:10pt;}
+.dims{background:#132B45;border-radius:6pt;padding:10pt;border:1pt solid #1E3A5F;}
+.dim{font-size:13pt;color:#CBD5E1;line-height:2;padding-left:10pt;position:relative;}
+.dim::before{content:"›";position:absolute;left:0;color:#10B981;}
+.note-box{margin-top:10pt;background:#132B45;border-radius:5pt;padding:8pt 10pt;border-left:2pt solid #F59E0B;}
+.note-box p{font-size:13pt;color:#CBD5E1;}
+.note-box span{color:#F59E0B;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>大模型视觉语义分析</h2>
+</div>
+<div class="content">
+  <div class="left">
+    <div class="box">
+      <div class="tags">
+        <div class="tag t1"><p>几何分析</p></div>
+        <p class="plus">+</p>
+        <div class="tag t2"><p>语义理解</p></div>
+      </div>
+      <p>几何角度量化关节偏差，<br>但无法描述<strong>握拍、眼神、击球点</strong>等细节</p>
+    </div>
+    <div class="box">
+      <p>调用 <strong>通义千问 qwen-vl-max</strong><br>输入：原图 + 角度问题列表<br>输出：自然语言改进建议</p>
+    </div>
+  </div>
+  <div class="right">
+    <p class="rtitle">建议覆盖5个维度</p>
+    <div class="dims">
+      <p class="dim">握拍方式（东方/西方/大陆式）</p>
+      <p class="dim">击球点位置与最佳区</p>
+      <p class="dim">击球点偏差对发力的影响</p>
+      <p class="dim">眼神与头部稳定性</p>
+      <p class="dim">最重要改进建议</p>
+    </div>
+    <div class="note-box"><p><span>可选模块</span>，无API Key时自动跳过</p></div>
+  </div>
+</div>
+</body></html>

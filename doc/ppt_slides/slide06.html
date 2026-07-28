@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:18pt 36pt 30pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:14pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:12pt;flex:1;}
+.col{flex:1;display:flex;flex-direction:column;gap:6pt;}
+.divider{width:1pt;background:#1E3A5F;flex-shrink:0;}
+.box{background:#1E3A55;border-radius:8pt;padding:10pt;}
+.box-title{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:8pt;}
+.formula{background:#132B45;border-radius:5pt;padding:7pt;text-align:center;border:1pt solid #1E3A5F;}
+.formula p{font-size:13pt;color:#00D4FF;font-family:'Times New Roman',serif;line-height:2;}
+.note{font-size:13pt;color:#CBD5E1;margin-top:6pt;line-height:1.4;}
+.groups{display:flex;flex-direction:column;gap:6pt;}
+.group{border-radius:5pt;padding:5pt 8pt;border-left:2pt solid;}
+.g1{background:#132B45;border-color:#00D4FF;}
+.g2{background:#132B45;border-color:#10B981;}
+.g3{background:#132B45;border-color:#F59E0B;}
+.gtitle{font-size:13pt;font-weight:bold;margin-bottom:1pt;}
+.g1 .gtitle{color:#00D4FF;}
+.g2 .gtitle{color:#10B981;}
+.g3 .gtitle{color:#F59E0B;}
+.gdesc{font-size:13pt;color:#CBD5E1;}
+.weights{display:flex;gap:6pt;flex-wrap:wrap;}
+.wb{font-size:13pt;padding:3pt 8pt;border-radius:4pt;background:rgba(0,212,255,0.1);color:#00D4FF;border:1pt solid rgba(0,212,255,0.2);}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>核心算法：角度计算 · 匹配 · 评分</h2>
+</div>
+<div class="content">
+  <div class="col">
+    <div class="box">
+      <p class="box-title">① 关节角度计算</p>
+      <div class="formula"><p>cos θ = (u · v) / (|u| × |v|)</p></div>
+      <p class="note">以关节顶点B为原点，向量点积求夹角；支持2D/3D</p>
+    </div>
+    <div class="groups">
+      <div class="group g1"><p class="gtitle">上肢组（4个）</p><p class="gdesc">右/左肘角、右/左肩角</p></div>
+      <div class="group g2"><p class="gtitle">下肢组（2个）</p><p class="gdesc">右/左膝角</p></div>
+      <div class="group g3"><p class="gtitle">躯干组（1个）</p><p class="gdesc">躯干倾角</p></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="col">
+    <div class="box">
+      <p class="box-title">② 加权RMSE模板匹配</p>
+      <div class="formula"><p>RMSE = √( Σ wᵢ(θᵢ − θᵢ*)² / Σ wᵢ )</p></div>
+      <p class="note">遍历所有模板，取RMSE最小阶段，无需手动标注</p>
+      <div class="weights" style="margin-top:8pt;">
+        <div class="wb"><p>肩角 w=2.5</p></div>
+        <div class="wb"><p>肘角 w=2.0</p></div>
+        <div class="wb"><p>其余 w=1.0</p></div>
+      </div>
+    </div>
+    <div class="box">
+      <p class="box-title">③ 非线性评分</p>
+      <div class="formula">
+        <p>ratio = |偏差| / 阈值</p>
+        <p>score = 100 × (1 − Σw·min(ratio²,4) / max_penalty)</p>
+      </div>
+      <p class="note">偏差越大扣分越多；单角度上限4倍防压垮总分</p>
+    </div>
+  </div>
+</div>
+</body></html>

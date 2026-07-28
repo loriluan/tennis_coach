@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:16pt 44pt 12pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:10pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:14pt;flex:1;}
+.col{flex:1;display:flex;flex-direction:column;gap:5pt;}
+.divider{width:1pt;background:#1E3A5F;flex-shrink:0;}
+.item{background:#1E3A55;border-radius:7pt;padding:6pt 10pt;display:flex;align-items:flex-start;gap:10pt;flex:1;}
+.num{min-width:24pt;height:24pt;border-radius:50%;background:#00D4FF;color:#1A3550;font-size:12pt;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
+.num p{margin:0;padding:0;line-height:1;}
+.num.g{background:#10B981;}
+.title{font-size:14pt;color:#E2E8F0;font-weight:bold;margin-bottom:4pt;}
+.desc{font-size:13pt;color:#CBD5E1;line-height:1.5;}
+.tag-row{display:flex;gap:6pt;margin-top:5pt;}
+.tag{font-size:12pt;padding:2pt 7pt;border-radius:4pt;}
+.t1{background:rgba(0,212,255,0.1);color:#00D4FF;border:1pt solid rgba(0,212,255,0.2);}
+.t2{background:rgba(16,185,129,0.1);color:#10B981;border:1pt solid rgba(16,185,129,0.2);}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>目标与意义</h2>
+</div>
+<div class="content">
+  <div class="col">
+    <div class="item"><div class="num"><p>1</p></div><div><p class="title">自动检测 · 客观量化</p><p class="desc">17关键点 + 7关节角度，输出0–100非线性评分</p></div></div>
+    <div class="item"><div class="num"><p>2</p></div><div><p class="title">双模输入 · 灵活适配</p><p class="desc">图片单帧评估；视频逐帧提取多帧均值聚合</p><div class="tag-row"><div class="tag t1"><p>图片模式</p></div><div class="tag t2"><p>视频模式</p></div></div></div></div>
+    <div class="item"><div class="num"><p>3</p></div><div><p class="title">智能建议 · 有的放矢</p><p class="desc">LLM针对问题关节生成自然语言改进建议</p></div></div>
+    <div class="item"><div class="num"><p>4</p></div><div><p class="title">历史追踪 · 可视进步</p><p class="desc">存储每次评估，进步曲线追踪训练成效</p></div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="col">
+    <div class="item"><div class="num g"><p>爱</p></div><div><p class="title">对爱好者</p><p class="desc">随时上传，无需教练，客观量化反馈</p></div></div>
+    <div class="item"><div class="num g"><p>教</p></div><div><p class="title">对教练</p><p class="desc">构建个性化模板库，减少重复讲解</p></div></div>
+    <div class="item"><div class="num g"><p>研</p></div><div><p class="title">研究价值</p><p class="desc">CV × LLM × 运动训练低成本落地方案</p></div></div>
+    <div class="item"><div class="num g"><p>新</p></div><div><p class="title">创新点</p><p class="desc">双引擎 + 加权RMSE + 几何语义融合</p></div></div>
+  </div>
+</div>
+</body></html>

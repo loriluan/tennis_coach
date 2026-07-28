@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>architecture_paper</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  font-family: 'SimSun', 'STSong', 'Times New Roman', serif;
+  padding: 40px 48px 48px;
+  width: 900px;
+}
+h2 {
+  text-align: center; font-size: 1.05rem; font-weight: bold;
+  letter-spacing: 0.08em; margin-bottom: 6px;
+}
+.fig-cap {
+  text-align: center; font-size: 0.78rem; color: #444;
+  margin-bottom: 28px; letter-spacing: 0.04em;
+}
+
+/* ── Layout ── */
+.arch { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+
+/* ── Horizontal arrow ── */
+.h-arrow {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; width: 28px; flex-shrink: 0; margin-top: 0;
+}
+.h-arrow::before {
+  content: ''; display: block;
+  width: 20px; height: 1px; background: #555;
+}
+.h-arrow::after {
+  content: ''; position: absolute; right: 2px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #555;
+}
+
+/* ── Vertical arrow ── */
+.arrow { width: 1px; height: 14px; background: #555; margin: 0 auto; position: relative; flex-shrink: 0; }
+.arrow::after {
+  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid #555;
+}
+
+/* ── Row ── */
+.row {
+  display: flex; align-items: stretch; gap: 0;
+}
+
+/* ── Layer label ── */
+.layer-label {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-size: 0.75rem; font-weight: bold; letter-spacing: 0.15em;
+  border: 1.5px solid #333; background: #f0f0f0;
+  padding: 8px 5px; min-width: 26px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Layer content ── */
+.layer-body {
+  flex: 1; border: 1.5px solid #333; border-left: none;
+  display: flex; align-items: center; gap: 0;
+  padding: 10px 14px;
+}
+
+/* ── Flowchart shapes ── */
+.fc-io {
+  flex: 1; text-align: center; font-size: 0.8rem;
+  padding: 7px 8px; border: 1.5px solid #333; background: #fafafa;
+  transform: skewX(-10deg);
+}
+.fc-io span { display: inline-block; transform: skewX(10deg); }
+
+.fc-process {
+  flex: 1; text-align: center; font-size: 0.8rem;
+  padding: 7px 10px; border: 1.5px solid #333; background: #fff;
+}
+.fc-process .sub {
+  display: block; font-size: 0.65rem; color: #555;
+  margin-top: 3px; font-family: 'Arial', sans-serif;
+}
+
+.fc-db {
+  flex: 1; text-align: center; font-size: 0.8rem;
+  padding: 7px 10px; border: 1.5px solid #333; background: #f5f5f5;
+  border-top: 4px double #333;
+}
+.fc-db .sub {
+  display: block; font-size: 0.65rem; color: #555;
+  margin-top: 3px; font-family: 'Arial', sans-serif;
+}
+
+/* ── Fallback note box (dashed) ── */
+.fc-note {
+  flex: 1; text-align: center; font-size: 0.78rem;
+  padding: 7px 10px; border: 1.5px dashed #888; background: #fafafa; color: #444;
+}
+.fc-note .sub {
+  display: block; font-size: 0.65rem; color: #666;
+  margin-top: 3px; font-family: 'Arial', sans-serif;
+}
+
+/* ── Vertical connector between rows ── */
+.connector-row {
+  display: flex; align-items: flex-start; padding-left: 26px;
+}
+.v-line-cell {
+  flex: 1; display: flex; justify-content: center;
+}
+.v-arrow {
+  width: 1px; height: 16px; background: #555; position: relative;
+}
+.v-arrow::after {
+  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid #555;
+}
+.v-label {
+  font-size: 0.6rem; color: #666; font-family: 'Arial', sans-serif;
+  white-space: nowrap; margin-left: 3px; margin-top: 1px;
+}
+
+/* ── Output boxes ── */
+.out-row {
+  display: flex; gap: 10px; flex: 1;
+}
+.fc-out {
+  flex: 1; text-align: center; font-size: 0.78rem;
+  padding: 7px 6px; border: 1.5px solid #333; background: #fafafa;
+  transform: skewX(-10deg);
+}
+.fc-out span { display: inline-block; transform: skewX(10deg); }
+</style>
+</head>
+<body>
+
+<h2>网球动作智能教练系统架构</h2>
+<p class="fig-cap">图2 &nbsp;系统总体架构图</p>
+
+<div class="arch">
+
+  <!-- ── 输入层 ── -->
+  <div class="row">
+    <div class="layer-label">输入层</div>
+    <div class="layer-body" style="gap:10px;">
+      <div class="fc-io"><span>静态图像（JPG / PNG）</span></div>
+      <div class="h-arrow" style="width:20px;"></div>
+      <div style="font-size:0.72rem;color:#555;white-space:nowrap;align-self:center;">或</div>
+      <div class="h-arrow" style="width:20px; transform:scaleX(-1);"></div>
+      <div class="fc-io"><span>视频文件（MP4 等）</span></div>
+    </div>
+  </div>
+
+  <!-- connector -->
+  <div class="connector-row">
+    <div class="v-line-cell"><div class="v-arrow"></div></div>
+  </div>
+
+  <!-- ── 关键点检测层 ── -->
+  <div class="row">
+    <div class="layer-label">检测层</div>
+    <div class="layer-body" style="gap:0;">
+      <div class="fc-process" style="flex:1.1;">
+        百度人体分析 API
+        <span class="sub">云端·强鲁棒性·网络可用时优先</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:0 10px;font-size:0.72rem;color:#555;flex-shrink:0;">⇄<br><span style="font-size:0.6rem;font-family:Arial;color:#888;">自动切换</span></div>
+      <div class="fc-process" style="flex:1.1;">
+        MediaPipe Pose（本地）
+        <span class="sub">离线·3D 关键点·网络不可用时启用</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- connector with label -->
+  <div class="connector-row">
+    <div class="v-line-cell">
+      <div class="v-arrow"></div>
+      <span class="v-label">17 关键点坐标（含 neck、pelvis 虚拟点）</span>
+    </div>
+  </div>
+
+  <!-- ── 角度计算层 ── -->
+  <div class="row">
+    <div class="layer-label">计算层</div>
+    <div class="layer-body">
+      <div class="fc-process">
+        关节角度计算（calc_angle）
+        <span class="sub">向量点积法，7 个核心角度，支持 2D / 3D 双模式</span>
+        <span class="sub">右肘角 · 左肘角 · 右肩角 · 左肩角 · 右膝角 · 左膝角 · 躯干倾角</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- connector with label -->
+  <div class="connector-row">
+    <div class="v-line-cell">
+      <div class="v-arrow"></div>
+      <span class="v-label">角度向量</span>
+    </div>
+  </div>
+
+  <!-- ── 匹配与评分层 ── -->
+  <div class="row">
+    <div class="layer-label">评估层</div>
+    <div class="layer-body" style="gap:0;">
+      <div class="fc-process" style="flex:1.2;">
+        加权 RMSE 模板匹配
+        <span class="sub">自动识别动作阶段</span>
+        <span class="sub">肩角权重 2.5·肘角权重 2.0</span>
+      </div>
+      <div class="h-arrow"></div>
+      <div class="fc-process" style="flex:1.2;">
+        逐角度偏差分析 + 评分
+        <span class="sub">平方惩罚·0–100 分</span>
+        <span class="sub">问题关节按偏差排序</span>
+      </div>
+      <div class="h-arrow"></div>
+      <div class="fc-process" style="flex:1.2;">
+        LLM 语义建议生成
+        <span class="sub">通义千问 qwen-vl-max</span>
+        <span class="sub">几何分析 + 语义理解互补</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- connector -->
+  <div class="connector-row">
+    <div class="v-line-cell"><div class="v-arrow"></div></div>
+  </div>
+
+  <!-- ── 存储层 ── -->
+  <div class="row">
+    <div class="layer-label">存储层</div>
+    <div class="layer-body" style="gap:10px;">
+      <div class="fc-db" style="flex:1.2;">
+        标准动作模板库
+        <span class="sub">tennis_templates.json</span>
+        <span class="sub">多次训练加权均值合并</span>
+      </div>
+      <div style="font-size:0.72rem;color:#555;align-self:center;padding:0 6px;">↔</div>
+      <div class="fc-db" style="flex:1.2;">
+        历史评估记录
+        <span class="sub">评分 · 问题列表 · 建议</span>
+        <span class="sub">训练进度追踪</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- connector -->
+  <div class="connector-row">
+    <div class="v-line-cell"><div class="v-arrow"></div></div>
+  </div>
+
+  <!-- ── 输出层 ── -->
+  <div class="row">
+    <div class="layer-label">输出层</div>
+    <div class="layer-body" style="gap:10px;">
+      <div class="out-row">
+        <div class="fc-out"><span>量化评分（0–100）</span></div>
+        <div class="fc-out"><span>问题关节列表</span></div>
+        <div class="fc-out"><span>自然语言改进建议</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

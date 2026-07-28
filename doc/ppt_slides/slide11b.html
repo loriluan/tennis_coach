@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:24pt 36pt 18pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:14pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:14pt;flex:1;}
+.left{flex:1;display:flex;flex-direction:column;gap:10pt;}
+.right{flex:1.2;border-radius:8pt;border:1pt solid #1E3A5F;overflow:hidden;}
+.item{background:#1E3A55;border-radius:7pt;padding:11pt 13pt;border-left:2pt solid #10B981;display:flex;align-items:flex-start;gap:10pt;}
+.num{min-width:22pt;height:22pt;border-radius:50%;background:#10B981;color:#1A3550;font-size:12pt;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
+.num p{margin:0;padding:0;line-height:1;}
+.ititle{font-size:14pt;color:#E2E8F0;font-weight:bold;margin-bottom:3pt;}
+.idesc{font-size:13pt;color:#CBD5E1;line-height:1.4;}
+.stat-row{display:flex;gap:8pt;}
+.stat{flex:1;background:#1E3A55;border-radius:7pt;padding:9pt;text-align:center;border:1pt solid #1E3A5F;}
+.stat .val{font-size:18pt;font-weight:bold;color:#10B981;}
+.stat p{font-size:13pt;color:#CBD5E1;margin-top:2pt;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>历史记录与进步追踪</h2>
+</div>
+<div class="content">
+  <div class="left">
+    <div class="item">
+      <div class="num"><p>📈</p></div>
+      <div><p class="ititle">进步曲线</p><p class="idesc">每次评估自动记录，折线图展示训练趋势</p></div>
+    </div>
+    <div class="item">
+      <div class="num"><p>📋</p></div>
+      <div><p class="ititle">历史评估记录</p><p class="idesc">保存动作、得分、问题列表，可按学员查询</p></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><p class="val">80</p><p>总测试次数</p></div>
+      <div class="stat"><p class="val">95%</p><p>成功率</p></div>
+      <div class="stat"><p class="val">13</p><p>动作类型</p></div>
+    </div>
+  </div>
+  <div class="right" id="progress-screenshot"></div>
+</div>
+</body></html>

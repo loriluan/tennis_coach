@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:28pt 44pt 22pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:16pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:12pt;flex:1;}
+.col{flex:1;display:flex;flex-direction:column;gap:10pt;}
+.box{background:#1E3A55;border-radius:8pt;padding:14pt;}
+.box .btitle{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:8pt;}
+.formula{background:#132B45;border-radius:5pt;padding:10pt;text-align:center;border:1pt solid #1E3A5F;}
+.formula p{font-size:13pt;color:#00D4FF;font-family:'Times New Roman',serif;line-height:1.9;}
+.note{font-size:13pt;color:#CBD5E1;margin-top:6pt;line-height:1.4;}
+.weights{display:flex;gap:6pt;flex-wrap:wrap;margin-top:6pt;}
+.wb{font-size:13pt;padding:3pt 8pt;border-radius:4pt;background:rgba(0,212,255,0.1);color:#00D4FF;border:1pt solid rgba(0,212,255,0.2);}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>加权 RMSE 匹配与非线性评分</h2>
+</div>
+<div class="content">
+  <div class="col">
+    <div class="box">
+      <p class="btitle">① 加权RMSE — 自动识别动作阶段</p>
+      <div class="formula"><p>RMSE = √( Σ wᵢ(θᵢ - θᵢ*)² / Σ wᵢ )</p></div>
+      <p class="note">遍历模板，取RMSE最小阶段；无需手动标注</p>
+    </div>
+    <div class="box">
+      <p class="btitle">角度权重</p>
+      <div class="weights">
+        <div class="wb"><p>肩角 w = 2.5</p></div>
+        <div class="wb"><p>肘角 w = 2.0</p></div>
+        <div class="wb"><p>其余 w = 1.0</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="box">
+      <p class="btitle">② 非线性评分 — 平方惩罚</p>
+      <div class="formula">
+        <p>ratio = |偏差| / 阈值</p>
+        <p>penalty += w × min(ratio², 4)</p>
+        <p>score = 100 × (1 − penalty / max_penalty)</p>
+      </div>
+      <p class="note">偏差越大扣分越多；单角度上限4倍防止一角压垮总分</p>
+    </div>
+  </div>
+</div>
+</body></html>

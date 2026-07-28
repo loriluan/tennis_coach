@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:24pt 44pt 44pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:6pt;margin-bottom:14pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.content{display:flex;gap:12pt;flex:1;}
+.left{flex:1;display:flex;flex-direction:column;gap:9pt;}
+.conclude{background:#1E3A55;border-radius:7pt;padding:7pt 10pt;border-left:2pt solid #00D4FF;display:flex;gap:9pt;align-items:flex-start;}
+.icon{font-size:12pt;flex-shrink:0;}
+.ctitle{font-size:14pt;color:#E2E8F0;font-weight:bold;margin-bottom:2pt;}
+.cdesc{font-size:13pt;color:#CBD5E1;line-height:1.4;}
+.limit{background:#1E3A55;border-radius:7pt;padding:7pt 10pt;border-left:2pt solid #F59E0B;}
+.ltitle{font-size:13pt;color:#F59E0B;font-weight:bold;margin-bottom:4pt;}
+.litem{font-size:13pt;color:#CBD5E1;line-height:1.9;padding-left:10pt;position:relative;}
+.litem::before{content:"·";position:absolute;left:2pt;color:#F59E0B;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>总结与展望</h2>
+</div>
+<div class="content">
+  <div class="left">
+    <div class="conclude"><div class="icon"><p>✅</p></div><div><p class="ctitle">双引擎架构</p><p class="cdesc">百度API + MediaPipe，在线/离线切换，检测17关键点</p></div></div>
+    <div class="conclude"><div class="icon"><p>✅</p></div><div><p class="ctitle">量化评分体系</p><p class="cdesc">加权RMSE + 平方惩罚，80次测试成功率95%</p></div></div>
+    <div class="conclude"><div class="icon"><p>✅</p></div><div><p class="ctitle">几何 + 语义融合</p><p class="cdesc">角度偏差量化 × LLM建议，互补覆盖技术细节</p></div></div>
+    <div class="limit">
+      <p class="ltitle">⚠ 当前局限 → 未来方向</p>
+      <p class="litem">模板代表性不足 → 扩充样本</p>
+      <p class="litem">阈值依赖经验 → 数据驱动标定</p>
+      <p class="litem">视频处理慢 → 轻量化/移动端</p>
+    </div>
+  </div>
+</div>
+</body></html>

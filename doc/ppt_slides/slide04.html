@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:24pt 36pt 18pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:14pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+.sec-tag{display:none;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.lane{margin-bottom:12pt;}
+.lane-hdr{display:inline-block;font-size:12pt;font-weight:bold;padding:3pt 14pt;border-radius:20pt;margin-bottom:8pt;letter-spacing:1px;}
+.t1{background:rgba(0,212,255,0.15);color:#00D4FF;border:1pt solid rgba(0,212,255,0.3);}
+.t2{background:rgba(16,185,129,0.15);color:#10B981;border:1pt solid rgba(16,185,129,0.3);}
+.flow{display:flex;align-items:center;gap:0;}
+.step{flex:1;background:#1E3A55;border-radius:8pt;padding:16pt 6pt 12pt;text-align:center;border-top:2.5pt solid #00D4FF;position:relative;}
+.step.c1{border-top-color:#00D4FF;}
+.step.c2{border-top-color:#A78BFA;}
+.step.c3{border-top-color:#10B981;}
+.step.c4{border-top-color:#FBBF24;}
+.step.c5{border-top-color:#E879F9;}
+.step.c6{border-top-color:#38BDF8;}
+.step.c7{border-top-color:#FB923C;}
+.step-icon{font-size:20pt;margin-bottom:6pt;}
+.step-title{font-size:13pt;color:#E2E8F0;font-weight:bold;margin-bottom:3pt;}
+.step-sub{font-size:12pt;color:#CBD5E1;}
+.arr{width:16pt;flex-shrink:0;text-align:center;font-size:12pt;color:#334155;}
+.divider{height:1pt;background:#1E3A5F;margin:0 0 12pt;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  
+  <h2>技术思路总览</h2>
+</div>
+
+<div class="lane">
+  <div class="lane-hdr t1"><p>🏋️ 训练路径</p></div>
+  <div class="flow">
+    <div class="step c1"><div class="step-icon"><p>📥</p></div><p class="step-title">输入</p><p class="step-sub">图片/视频</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c2"><div class="step-icon"><p>🤖</p></div><p class="step-title">关键点检测</p><p class="step-sub">百度/MediaPipe</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c3"><div class="step-icon"><p>📐</p></div><p class="step-title">角度计算</p><p class="step-sub">7个关节</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c4"><div class="step-icon"><p>🎞️</p></div><p class="step-title">帧合并</p><p class="step-sub">均值/最高分帧</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c5"><div class="step-icon"><p>💾</p></div><p class="step-title">保存模板</p><p class="step-sub">加权均值合并</p></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="lane">
+  <div class="lane-hdr t2"><p>🎾 评估路径</p></div>
+  <div class="flow">
+    <div class="step c1"><div class="step-icon"><p>📥</p></div><p class="step-title">输入</p><p class="step-sub">图片/视频</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c2"><div class="step-icon"><p>🤖</p></div><p class="step-title">关键点检测</p><p class="step-sub">百度/MediaPipe</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c3"><div class="step-icon"><p>🎯</p></div><p class="step-title">角度+匹配</p><p class="step-sub">加权RMSE</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c4"><div class="step-icon"><p>🏆</p></div><p class="step-title">量化评分</p><p class="step-sub">0–100分</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c6"><div class="step-icon"><p>💬</p></div><p class="step-title">LLM分析</p><p class="step-sub">语义建议</p></div>
+    <div class="arr"><p>▶</p></div>
+    <div class="step c7"><div class="step-icon"><p>📊</p></div><p class="step-title">输出报告</p><p class="step-sub">评分+建议</p></div>
+  </div>
+</div>
+
+</body></html>

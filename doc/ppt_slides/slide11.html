@@ -1,0 +1,62 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#1A3550;font-family:Arial,sans-serif;display:flex;flex-direction:column;padding:22pt 36pt 16pt;overflow:hidden;}
+.top{display:flex;align-items:center;gap:4pt;margin-bottom:12pt;}
+.accent{width:4pt;height:20pt;background:#00D4FF;border-radius:2pt;}
+h2{font-size:19pt;color:#fff;font-weight:bold;}
+.cols{display:flex;gap:12pt;flex:1;}
+.col{flex:1;display:flex;flex-direction:column;gap:7pt;}
+.col-hdr{border-radius:6pt;padding:5pt 10pt;display:flex;align-items:center;justify-content:space-between;}
+.c1h{background:rgba(16,185,129,0.12);border:1pt solid rgba(16,185,129,0.3);}
+.c2h{background:rgba(249,115,22,0.12);border:1pt solid rgba(249,115,22,0.35);}
+.hdr-title{font-size:11pt;font-weight:bold;color:#fff;}
+.score{font-size:16pt;font-weight:bold;}
+.sh{color:#10B981;}.sl{color:#F97316;}
+.imgs{display:flex;gap:6pt;flex:1;}
+.img-slot{flex:1;border-radius:6pt;border:1pt solid #1E3A5F;overflow:hidden;}
+.img-label{font-size:9pt;color:#64748B;text-align:center;padding:3pt 0;}
+.finding{background:#1E3A55;border-radius:5pt;padding:5pt 10pt;font-size:9.5pt;color:#CBD5E1;}
+.divider{width:1pt;background:#1E3A5F;flex-shrink:0;}
+</style></head><body>
+<div class="top">
+  <div class="accent"></div>
+  <h2>实验三四：视频输入</h2>
+</div>
+<div class="cols">
+  <div class="col">
+    <div class="col-hdr c1h">
+      <p class="hdr-title">实验三 · 规范动作视频</p>
+      <p class="score sh">82.2分</p>
+    </div>
+    <div class="imgs">
+      <div>
+        <div class="img-slot" id="e3-frame" style="height:160pt;"></div>
+        <p class="img-label">视频截帧</p>
+      </div>
+      <div>
+        <div class="img-slot" id="e3-result" style="height:160pt;"></div>
+        <p class="img-label">视频评分结果</p>
+      </div>
+    </div>
+    <div class="finding"><p>✓ 9帧稳定 · 最佳帧97分 · 识别4个动作阶段</p></div>
+  </div>
+  <div class="divider"></div>
+  <div class="col">
+    <div class="col-hdr c2h">
+      <p class="hdr-title">实验四 · 不规范动作视频</p>
+      <p class="score sl">62.8分</p>
+    </div>
+    <div class="imgs">
+      <div>
+        <div class="img-slot" id="e4-frame" style="height:160pt;"></div>
+        <p class="img-label">视频截帧</p>
+      </div>
+      <div>
+        <div class="img-slot" id="e4-kp" style="height:160pt;"></div>
+        <p class="img-label">关键点检测</p>
+      </div>
+    </div>
+    <div class="finding"><p>✗ 左/右肘角、左肩角各5次偏差 · 多帧抑噪有效</p></div>
+  </div>
+</div>
+</body></html>

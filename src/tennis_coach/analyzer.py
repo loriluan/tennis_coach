@@ -5,38 +5,19 @@ from .data import ANGLE_DEFS, ANGLE_THRESHOLDS, ANGLE_ADVICE, ANGLE_WEIGHTS
 
 
 def calc_angle(a, b, c, use_3d: bool = False) -> Optional[float]:
-    """计算 a-b-c 三点以 b 为顶点的夹角（度）。
-    
-    Args:
-        a, b, c: 关键点字典，包含 x, y 坐标，可选 z 坐标
-        use_3d: 是否使用3D坐标计算（需要z坐标）
-    
-    Returns:
-        角度（度），如果关键点缺失则返回 None
-    """
+    """计算 a-b-c 三点以 b 为顶点的夹角（度）。"""
     if not (a and b and c):
         return None
-    
     if use_3d and 'z' in a and 'z' in b and 'z' in c:
-        # 3D角度计算（使用x, y, z坐标）
-        ax, ay, az = a['x'] - b['x'], a['y'] - b['y'], a['z'] - b['z']
-        cx, cy, cz = c['x'] - b['x'], c['y'] - b['y'], c['z'] - b['z']
-        dot = ax * cx + ay * cy + az * cz
-        mag_a = math.sqrt(ax**2 + ay**2 + az**2)
-        mag_c = math.sqrt(cx**2 + cy**2 + cz**2)
+        ax, ay, az = a['x']-b['x'], a['y']-b['y'], a['z']-b['z']
+        cx, cy, cz = c['x']-b['x'], c['y']-b['y'], c['z']-b['z']
+        dot, mag_a, mag_c = ax*cx+ay*cy+az*cz, math.sqrt(ax**2+ay**2+az**2), math.sqrt(cx**2+cy**2+cz**2)
     else:
-        # 2D角度计算（仅使用x, y坐标）
-        ax, ay = a['x'] - b['x'], a['y'] - b['y']
-        cx, cy = c['x'] - b['x'], c['y'] - b['y']
-        dot = ax * cx + ay * cy
-        mag_a = math.sqrt(ax**2 + ay**2)
-        mag_c = math.sqrt(cx**2 + cy**2)
-    
+        ax, ay = a['x']-b['x'], a['y']-b['y']
+        cx, cy = c['x']-b['x'], c['y']-b['y']
+        dot, mag_a, mag_c = ax*cx+ay*cy, math.sqrt(ax**2+ay**2), math.sqrt(cx**2+cy**2)
     mag = mag_a * mag_c
-    if mag < 1e-6:
-        return None
-    cos_val = max(-1.0, min(1.0, dot / mag))
-    return round(math.degrees(math.acos(cos_val)), 1)
+    return None if mag < 1e-6 else round(math.degrees(math.acos(max(-1.0, min(1.0, dot/mag)))), 1)
 
 
 def extract_angles(parts: dict, use_3d: bool = False) -> dict:
@@ -77,25 +58,15 @@ def compare_to_template(student_angles: dict, template_angles: dict, action: str
     """对比学员角度与标准模板，返回问题列表。"""
     thresholds = ANGLE_THRESHOLDS.get(action, {})
     issues = []
-    for angle_name, std_val in template_angles.items():
-        if angle_name not in student_angles:
-            continue
-        student_val = student_angles[angle_name]
-        threshold = thresholds.get(angle_name, 25)
-        diff = student_val - std_val
-        if abs(diff) > threshold:
-            direction = "偏大" if diff > 0 else "偏小"
-            advice = ANGLE_ADVICE.get(angle_name, {}).get(direction, "请参考标准动作调整。")
-            issues.append({
-                "角度名称": angle_name,
-                "标准值": std_val,
-                "实际值": student_val,
-                "偏差": round(diff, 1),
-                "方向": direction,
-                "建议": advice,
-                "权重": ANGLE_WEIGHTS.get(angle_name, 1.0),
-            })
-    # 按权重 × 偏差绝对值降序排列，最严重的问题排前面
+    for k, std in template_angles.items():
+        if k not in student_angles: continue
+        diff = student_angles[k] - std
+        if abs(diff) <= thresholds.get(k, 25): continue
+        d = "偏大" if diff > 0 else "偏小"
+        issues.append({"角度名称": k, "标准值": std, "实际值": student_angles[k],
+                       "偏差": round(diff, 1), "方向": d,
+                       "建议": ANGLE_ADVICE.get(k, {}).get(d, "请参考标准动作调整。"),
+                       "权重": ANGLE_WEIGHTS.get(k, 1.0)})
     issues.sort(key=lambda i: i['权重'] * abs(i['偏差']), reverse=True)
     return issues
 
@@ -120,35 +91,17 @@ def _nonlinear_score(issues: list, template_angles: dict) -> int:
 
 
 def evaluate(student_parts: dict, template: dict, action: str, use_3d: bool = False) -> dict:
-    """完整评估流程，返回报告字典。
-    
-    Args:
-        student_parts: 学员关键点
-        template: 标准模板
-        action: 动作名称
-        use_3d: 是否使用3D角度计算
-    
-    Returns:
-        评估报告字典
-    """
+    """完整评估流程，返回报告字典。"""
     student_angles = extract_angles(student_parts, use_3d=use_3d)
     template_angles = template.get('angles', {})
     issues = compare_to_template(student_angles, template_angles, action)
-
-    # 补充 threshold 到 issue 供评分使用
     thresholds = ANGLE_THRESHOLDS.get(action, {})
     for iss in issues:
         iss['threshold'] = thresholds.get(iss['角度名称'], 25)
-
     score = _nonlinear_score(issues, template_angles)
-    problem_count = len(issues)
-
     return {
-        "动作": action,
-        "得分": score,
-        "学员角度": student_angles,
-        "标准角度": template_angles,
-        "问题列表": issues,
-        "总结": f"共检测 {len(template_angles)} 个角度，{problem_count} 个需改进。" if problem_count
+        "动作": action, "得分": score,
+        "学员角度": student_angles, "标准角度": template_angles, "问题列表": issues,
+        "总结": f"共检测 {len(template_angles)} 个角度，{len(issues)} 个需改进。" if issues
                 else "动作规范，各关节角度均在标准范围内！",
     }
