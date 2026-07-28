@@ -149,7 +149,7 @@ class Handler(SimpleHTTPRequestHandler):
         camera_angle = body.get('camera_angle', '')
         action_type = body.get('action_type', '')
         try:
-            from tennis_coach.analyzer import extract_angles, evaluate
+            from tennis_coach.analyzer import extract_angles, evaluate, weighted_rmse
             from tennis_coach.templates import load_templates
             templates = load_templates()
             if not templates:
@@ -196,7 +196,7 @@ class Handler(SimpleHTTPRequestHandler):
         body = self._read_body()
         mime = body.get('mime', 'image/jpeg')
         try:
-            from tennis_coach.analyzer import extract_angles, evaluate
+            from tennis_coach.analyzer import extract_angles, evaluate, weighted_rmse
             from tennis_coach.templates import load_templates
             templates = load_templates()
             results = {}
